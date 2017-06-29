@@ -5,7 +5,8 @@
 Restore helps you write predictable apps that are easy to test and debug. It uses observable values to automatically keep your components in sync without unnecessary renders.
 
 Restore comes with some helpful dev tools, including a time travel debugger.
-![Restore Dev Tools](https://media.giphy.com/media/3oKIPcdh1Fgnj5ANYA/giphy.gif)
+
+![Restore Dev Tools](https://media.giphy.com/media/3o7bukRSLYJyR9jdXG/giphy.gif)
 
 ## Install
 
