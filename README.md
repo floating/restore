@@ -196,3 +196,8 @@ let Root = Restore.connect(App, store)
 ReactDOM.render(<Root />, document.getElementById('root'))
 
 ```
+
+## Enabling Dev Tools / Time Travel
+
+Restore ships with a dev tools component (`<Restore.Dev />`) that you can drop anywhere in your application to enable the dev tools.
+
