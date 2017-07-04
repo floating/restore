@@ -2,7 +2,11 @@
 
 *A __predictable__ and __observable__ state container for React apps*
 
-Restore helps you write predictable apps that are easy to test and debug. It uses observable values to keep your components in sync without unnecessary renders.
+Restore helps you write predictable apps that are easy to test and debug. It uses observable values to automatically keep your components in sync without unnecessary renders.
+
+Restore comes with some helpful dev tools, including a time travel debugger.
+
+![Restore Dev Tools](https://media.giphy.com/media/3o7bukRSLYJyR9jdXG/giphy.gif)
 
 ## Install
 
@@ -192,3 +196,8 @@ let Root = Restore.connect(App, store)
 ReactDOM.render(<Root />, document.getElementById('root'))
 
 ```
+
+## Enabling Dev Tools / Time Travel
+
+Restore ships with a dev tools component (`<Restore.Dev />`) that you can drop anywhere in your application to enable the dev tools.
+
