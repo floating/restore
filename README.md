@@ -201,3 +201,17 @@ ReactDOM.render(<Root />, document.getElementById('root'))
 
 Restore ships with a dev tools component (`<Restore.Dev />`) that you can drop anywhere in your application to enable the dev tools.
 
+## Standalone Observers
+
+Connected components become observers but you can leverage this functionality outside of components too.
+
+```javascript
+
+store.observer(() => {
+  console.log(store('text'))
+})
+
+```
+
+This function will run once immediately and again anytime the values it consumes change -- in this case our `text` value.
+
