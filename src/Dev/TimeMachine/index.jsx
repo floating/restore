@@ -4,6 +4,7 @@
 
 import React from 'react'
 import connect from '../../connect'
+import clone from '../../clone'
 
 class TimeMachine extends React.Component {
   constructor (...args) {
@@ -20,7 +21,7 @@ class TimeMachine extends React.Component {
   componentWillMount () {
     this.store.api.feed((state, actions, internal) => {
       if (!internal) {
-        this.history.push({actions, state})
+        this.history.push({actions, state: clone(state)})
         this.future = []
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
         this.forceUpdate()

@@ -24,19 +24,19 @@ export const resolve = (internal, action, tree = {}, name) => {
             internal.queued = false
             let actions = []
             let paths = []
-            let state = clone(internal.state)
             internal.queue.normal.concat(internal.queue.deferred).forEach(action => {
               actions.push(action.details)
               if (action.path) {
                 paths.push(action.path)
-                patch(state, action.path, action.update(get(state, action.path), state))
+                let part = get(internal.state, action.path)
+                patch(internal.state, action.path, action.update(clone(part), internal.state))
               } else {
                 paths.push('*')
-                state = action.update(state, state)
+                internal.state = action.update(internal.state, internal.state)
               }
             })
             internal.queue = {normal: [], deferred: []}
-            apply(internal, state, actions, paths)
+            apply(internal, actions, paths)
           }, 0)
           internal.queued = true
         } else {

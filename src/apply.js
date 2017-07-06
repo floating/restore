@@ -2,8 +2,7 @@
   Apply updates to state and notify observers/watchers
 */
 
-export const apply = (internal, state, actions, paths, i) => {
-  internal.state = state
+export const apply = (internal, actions, paths, i) => {
   internal.observatory.pending = []
   let changes = [...new Set(paths)]
   let targets = [] // Targets will be populatate with all the state paths that have been updated
@@ -35,6 +34,6 @@ export const apply = (internal, state, actions, paths, i) => {
     }
   }
   process() // Trigger all targets
-  Object.keys(internal.watchers).forEach(id => internal.watchers[id](state, actions, i))
+  Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, actions, i))
 }
 export default apply

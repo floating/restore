@@ -19,6 +19,60 @@ test('Catch Bad Paths', () => {
   expect(() => store('[]')).toThrow()
 })
 
+test('Pure Render Components Test', (done) => {
+  let renderCount = {Connected: 0, PureA: 0, PureB: 0, Impure: 0}
+  class PureA extends React.PureComponent {
+    render () {
+      renderCount.PureA++
+      if (this.props.aaa.value === 3) {
+        expect(renderCount.Connected).toBe(5)
+        expect(renderCount.Impure).toBe(5)
+        expect(renderCount.PureA).toBe(4)
+        expect(renderCount.PureB).toBe(2)
+        done()
+      }
+      return null
+    }
+  }
+  class PureB extends React.PureComponent {
+    render () {
+      renderCount.PureB++
+      expect(this.props.aab.value).toBeLessThan(2)
+      return null
+    }
+  }
+  class Impure extends React.Component {
+    render () {
+      renderCount.Impure++
+      expect(this.props.aab.value).toBeLessThan(2)
+      return null
+    }
+  }
+  class Connected extends React.Component {
+    render () {
+      renderCount.Connected++
+      let aa = this.store('a.a')
+      return (
+        <div>
+          <Impure aab={aa.b} />
+          <PureA aaa={aa.a} />
+          <PureB aab={aa.b} />
+        </div>
+      )
+    }
+  }
+  let initialState = {a: {a: {a: {value: 0}, b: {value: 0}}}}
+  let actions = {
+    aaaPlus: (update) => update('a.a.a', (a) => { return {value: a.value + 1} }),
+    aabPlus: (update) => update('a.a.b', (b) => { return {value: b.value + 1} })
+  }
+  const store = Restore.create(initialState, actions)
+  const Root = Restore.connect(Connected, store)
+  ReactDOM.render(<Root />, document.createElement('div'))
+  store.aabPlus()
+  setInterval(store.aaaPlus, 500)
+})
+
 test('Target Render Counts', (done) => {
   let renderCount = {app: 0, deep: 0, deeper: 0}
   class Deeper extends React.Component {

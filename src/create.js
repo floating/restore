@@ -28,7 +28,10 @@ export const create = (state = {}, actions = {}, options) => {
   }
   store.api = {
     getState: () => clone(internal.state),
-    replaceState: state => apply(internal, state, ['replaceState (internal)'], '*', true),
+    replaceState: state => {
+      internal.state = state
+      apply(internal, ['replaceState (internal)'], '*', true)
+    },
     feed: watcher => {
       let id = uuid()
       internal.watchers[id] = watcher
