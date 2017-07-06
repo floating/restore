@@ -22,7 +22,7 @@ export const create = (state = {}, actions = {}, options) => {
     internal.observatory.track = id
     if (internal.observatory.order.indexOf(internal.observatory.track) === -1) internal.observatory.order.push(internal.observatory.track)
     internal.observatory.observers[internal.observatory.track] = alt || run
-    let returned = run()
+    let returned = run(internal.store)
     internal.observatory.track = null
     return { returned, remove: () => delete internal.observatory.observers[id] }
   }

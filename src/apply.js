@@ -29,7 +29,7 @@ export const apply = (internal, actions, paths, i) => {
   let process = () => {
     if (internal.observatory.pending.length > 0) {
       let target = internal.observatory.pending.shift()
-      if (internal.observatory.observers[target]) internal.observatory.observers[target]()
+      if (internal.observatory.observers[target]) internal.observatory.observers[target](internal.store)
       process()
     }
   }

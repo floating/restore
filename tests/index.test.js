@@ -275,3 +275,12 @@ test('Test Render Children With Actions', (done) => {
   const Root = Restore.connect(App, store)
   ReactDOM.render(<Root />, document.createElement('div'))
 })
+
+test('Standalone Obseerver', (done) => {
+  let store = Restore.create({count: 0}, {add: (update, num) => update('count', count => count + num)})
+  store.observer(s => {
+    expect(store('count')).toBe(0)
+    expect(s('count')).toBe(0)
+    done()
+  })
+})
