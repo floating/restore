@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Restore from '../../../'
+import Restore from 'react-restore'
 
 import App from './App'
 import * as actions from './actions'

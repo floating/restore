@@ -1,5 +1,5 @@
 import React from 'react'
-import Restore from '../../../../'
+import Restore from 'react-restore'
 
 import Add from './Add'
 import List from './List'

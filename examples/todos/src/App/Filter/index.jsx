@@ -1,5 +1,5 @@
 import React from 'react'
-import Restore from '../../../../../'
+import Restore from 'react-restore'
 
 class Filter extends React.Component {
   visibilityLink = (visibility) => {
