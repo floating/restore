@@ -17,7 +17,7 @@ export const resolve = (internal, action, tree = {}, name) => {
           up = path
           path = false
         }
-        internal.queue[deferred ? 'deferred' : 'normal'].push({update: up, path: path, details: {name: name, count: count++, deferred: deferred}})
+        internal.queue[deferred ? 'deferred' : 'normal'].push({update: up, path, details: {name, count: count++, deferred}})
         if (!internal.queued) {
           setTimeout(() => {
             deferred = true
@@ -32,7 +32,7 @@ export const resolve = (internal, action, tree = {}, name) => {
                 patch(internal.state, action.path, action.update(clone(part), internal.state))
               } else {
                 paths.push('*')
-                internal.state = action.update(internal.state, internal.state)
+                internal.state = action.update(clone(internal.state), internal.state)
               }
             })
             internal.queue = {normal: [], deferred: []}
@@ -47,7 +47,7 @@ export const resolve = (internal, action, tree = {}, name) => {
       return internal.store
     }
   } else if (typeof action === 'object') {
-    Object.keys(action).forEach((name) => { tree[name] = resolve(internal, action[name], tree[name], name) })
+    Object.keys(action).forEach(name => { tree[name] = resolve(internal, action[name], tree[name], name) })
   } else {
     throw new Error(`[Restore] Invlaid entry in action tree: '${name}' is a ${typeof action}.`)
   }
