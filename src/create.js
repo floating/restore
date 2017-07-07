@@ -28,7 +28,7 @@ export const create = (state = {}, actions = {}, options) => {
     return { returned: observe(internal, id, run), remove: () => delete internal.observatory.observers[id] }
   }
   store.api = {
-    getState: () => internal.state,
+    getState: () => clone(internal.state),
     replaceState: state => {
       internal.state = state
       apply(internal, ['replaceState (internal)'], '*', true)
