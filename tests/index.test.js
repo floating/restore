@@ -19,7 +19,7 @@ test('Catch Bad Paths', () => {
   expect(() => store('[]')).toThrow()
 })
 
-test('Pure Render Components Test', (done) => {
+test('Pure Render Components Test', done => {
   let renderCount = {Connected: 0, PureA: 0, PureB: 0, Impure: 0}
   class PureA extends React.PureComponent {
     render () {
@@ -73,7 +73,7 @@ test('Pure Render Components Test', (done) => {
   setInterval(store.aaaPlus, 500)
 })
 
-test('Target Render Counts', (done) => {
+test('Target Render Counts', done => {
   let renderCount = {app: 0, deep: 0, deeper: 0}
   class Deeper extends React.Component {
     render () {
@@ -191,7 +191,7 @@ test('getChildContext in Connected Component', () => {
   ReactDOM.render(<Root />, document.createElement('div'))
 })
 
-test('componentWillUnmount in Connected Component', (done) => {
+test('componentWillUnmount in Connected Component', done => {
   class App extends React.Component {
     componentWillUnmount () { done() }
     render () { return null }
@@ -202,7 +202,7 @@ test('componentWillUnmount in Connected Component', (done) => {
   ReactDOM.unmountComponentAtNode(container)
 })
 
-test('Cast Nested Objects', (done) => {
+test('Cast Nested Objects', done => {
   class App extends React.Component {
     componentDidMount () {
       this.store.updateTest()
@@ -228,7 +228,7 @@ test('Cast Nested Objects', (done) => {
   ReactDOM.render(<Root />, document.createElement('div'))
 })
 
-test('Test Render Children With Actions', (done) => {
+test('Test Render Children With Actions', done => {
   class ChildWithoutStore extends React.Component {
     render () {
       expect(this.store).toBeFalsy()
@@ -276,11 +276,43 @@ test('Test Render Children With Actions', (done) => {
   ReactDOM.render(<Root />, document.createElement('div'))
 })
 
-test('Standalone Obseerver', (done) => {
+test('Standalone Observer', done => {
   let store = Restore.create({count: 0}, {add: (update, num) => update('count', count => count + num)})
   store.observer(s => {
     expect(store('count')).toBe(0)
     expect(s('count')).toBe(0)
     done()
+  })
+})
+
+test('Observer Reregister', done => {
+  let c = 0
+  let actions = {
+    updateTestOne: (update) => update('testOne', testOne => testOne + 1),
+    updateTestTwo: (update) => update('testTwo', testTwo => testTwo + 1)
+  }
+  const store = Restore.create({testOne: 0, testTwo: 0, testThree: 0}, actions)
+  store.observer(() => {
+    c++
+    if (store('testOne') === 2) {
+      if (store('testTwo') === 2) {
+        expect(c).toBe(4)
+        done()
+      } else {
+        expect(store('testTwo')).toBe(1)
+      }
+    } else {
+      expect(store('testThree')).toBe(0)
+    }
+  })
+  store.updateTestOne() // Updates Observer
+  setTimeout(() => {
+    store.updateTestTwo() // Doesn't Update Observer
+    setTimeout(() => {
+      store.updateTestOne() // Updates Observer
+      setTimeout(() => {
+        store.updateTestTwo()  // Updates Observer
+      }, 0)
+    }, 0)
   })
 })

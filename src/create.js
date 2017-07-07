@@ -7,24 +7,25 @@ import clone from './clone'
 import get from './get'
 import resolve from './resolve'
 import uuid from './uuid'
+import observe from './observe'
 
 export const create = (state = {}, actions = {}, options) => {
   let internal = {state: clone(state), queued: false, queue: {normal: [], deferred: []}, watchers: {}, observatory: {track: '', order: [], links: {}, observers: {}, pending: []}}
   const store = (path) => {
     if (internal.observatory.track) {
+      let id = internal.observatory.track
+      internal.observatory.observers[id].links = internal.observatory.observers[id].links || []
       internal.observatory.links[path] = internal.observatory.links[path] || []
+      if (internal.observatory.observers[id].links.indexOf(path) === -1) internal.observatory.observers[id].links.push(path)
       if (internal.observatory.links[path].indexOf(internal.observatory.track) === -1) internal.observatory.links[path].push(internal.observatory.track)
     }
     return get(internal.state, path)
   }
   store.observer = (run, id, alt) => {
     id = id || uuid()
-    internal.observatory.track = id
-    if (internal.observatory.order.indexOf(internal.observatory.track) === -1) internal.observatory.order.push(internal.observatory.track)
-    internal.observatory.observers[internal.observatory.track] = alt || run
-    let returned = run(internal.store)
-    internal.observatory.track = null
-    return { returned, remove: () => delete internal.observatory.observers[id] }
+    if (internal.observatory.order.indexOf(id) === -1) internal.observatory.order.push(id)
+    internal.observatory.observers[id] = {links: [], run: alt || run}
+    return { returned: observe(internal, id, run), remove: () => delete internal.observatory.observers[id] }
   }
   store.api = {
     getState: () => clone(internal.state),
