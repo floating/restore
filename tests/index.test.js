@@ -2,7 +2,7 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Restore from '../src'
+import Restore from '../lib'
 
 const isRequired = (props, propName, componentName) => {
   if (props[propName] === undefined || props[propName] === null) return new Error('Invalid prop `' + propName + '` supplied to' + ' `' + componentName + '`. Validation failed.')
