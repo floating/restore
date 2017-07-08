@@ -31,7 +31,8 @@ export const create = (state = {}, actions = {}, options) => {
     getState: () => clone(internal.state),
     replaceState: state => {
       internal.state = state
-      notify(internal, ['replaceState (internal)'], '*', true)
+      notify(internal, '*')
+      Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, ['replaceState (internal)'], true)) // Notify all watchers
     },
     feed: watcher => {
       let id = uuid()
