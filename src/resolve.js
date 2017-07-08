@@ -2,7 +2,7 @@
   Resolves actions passed during create
 */
 
-import apply from './apply'
+import notify from './notify'
 import clone from './clone'
 import get from './get'
 import patch from './patch'
@@ -36,7 +36,7 @@ export const resolve = (internal, action, tree = {}, name) => {
               }
             })
             internal.queue = {normal: [], deferred: []}
-            apply(internal, actions, paths)
+            notify(internal, actions, paths)
           }, 0)
           internal.queued = true
         } else {

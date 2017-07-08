@@ -2,7 +2,7 @@
   Create the store (Restore.create)
 */
 
-import apply from './apply'
+import notify from './notify'
 import clone from './clone'
 import get from './get'
 import resolve from './resolve'
@@ -31,7 +31,7 @@ export const create = (state = {}, actions = {}, options) => {
     getState: () => clone(internal.state),
     replaceState: state => {
       internal.state = state
-      apply(internal, ['replaceState (internal)'], '*', true)
+      notify(internal, ['replaceState (internal)'], '*', true)
     },
     feed: watcher => {
       let id = uuid()
