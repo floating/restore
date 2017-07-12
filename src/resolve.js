@@ -29,10 +29,10 @@ export const resolve = (internal, action, tree = {}, name) => {
               if (action.path) {
                 paths.push(action.path)
                 let part = get(internal.state, action.path)
-                patch(internal.state, action.path, action.update(clone(part), internal.state))
+                patch(internal.state, action.path, action.update(clone.deep(part), internal.state))
               } else {
                 paths.push('*')
-                internal.state = action.update(clone(internal.state), internal.state)
+                internal.state = action.update(clone.deep(internal.state), internal.state)
               }
             })
             internal.queue = {normal: [], deferred: []}

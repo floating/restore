@@ -14,11 +14,6 @@ test('Catch Navigation Past Non-object Value', () => {
   expect(() => store('test.deeper')).toThrow()
 })
 
-test('Catch Bad Paths', () => {
-  const store = Restore.create({}, {})
-  expect(() => store('[]')).toThrow()
-})
-
 test('Pure Render Components Test', done => {
   let renderCount = {Connected: 0, PureA: 0, PureB: 0, Impure: 0}
   class PureA extends React.PureComponent {
@@ -315,4 +310,115 @@ test('Observer Reregister', done => {
       }, 0)
     }, 0)
   })
+})
+
+test('Observer Reregister', done => {
+  let c = 0
+  let actions = {
+    updateTestOne: (update) => update('testOne', testOne => testOne + 1),
+    updateTestTwo: (update) => update('testTwo', testTwo => testTwo + 1)
+  }
+  const store = Restore.create({testOne: 0, testTwo: 0, testThree: 0}, actions)
+  store.observer(() => {
+    c++
+    if (store('testOne') === 2) {
+      if (store('testTwo') === 2) {
+        expect(c).toBe(4)
+        done()
+      } else {
+        expect(store('testTwo')).toBe(1)
+      }
+    } else {
+      expect(store('testThree')).toBe(0)
+    }
+  })
+  store.updateTestOne() // Updates Observer
+  setTimeout(() => {
+    store.updateTestTwo() // Doesn't Update Observer
+    setTimeout(() => {
+      store.updateTestOne() // Updates Observer
+      setTimeout(() => {
+        store.updateTestTwo()  // Updates Observer
+      }, 0)
+    }, 0)
+  }, 0)
+})
+
+test('Immutability for PureComponents', done => {
+  let renderCounts = {PureA: 0, PureABX: 0, PureC: 0}
+  class PureA extends React.PureComponent {
+    render () {
+      renderCounts.PureA++
+      if (this.props.a.b.y.z === 3) {
+        expect(renderCounts.PureABX).toBe(1)
+        expect(renderCounts.PureA).toBe(4)
+        expect(renderCounts.PureC).toBe(2)
+        done()
+      }
+      return null
+    }
+  }
+  class PureC extends React.PureComponent {
+    render () {
+      renderCounts.PureC++
+      expect(this.props.c[1]).toBe(0)
+      return null
+    }
+  }
+  class PureABX extends React.PureComponent {
+    render () {
+      renderCounts.PureABX++
+      expect(renderCounts.PureABX).toBe(1)
+      expect(this.props.x).toBe(0)
+      return null
+    }
+  }
+  class App extends React.Component {
+    render () {
+      let a = this.store('a')
+      let c = this.store('c')
+      return (
+        <div>
+          <PureABX x={a.b.x} />
+          <PureC c={c} />
+          <PureA a={a} />
+        </div>
+      )
+    }
+  }
+  let actions = {
+    updateZ: (update) => update('a.b.y.z', z => z + 1),
+    updateC2: (update) => update('c[2]', v => v + 1)
+  }
+  const store = Restore.create({a: {b: {x: 0, y: {z: 0}}}, c: [0, 0, 0]}, actions)
+  const Root = Restore.connect(App, store)
+  ReactDOM.render(<Root />, document.createElement('div'))
+  store.updateZ()
+  setTimeout(() => {
+    store.updateZ().updateC2()
+    setTimeout(() => {
+      store.updateZ()
+    }, 0)
+  }, 0)
+})
+
+test('Array Access', done => {
+  let c = 0
+  let actions = {
+    makeArray: (update, path) => update(path, () => []),
+    pushToArray: (update, path, value) => update(path, arr => {
+      arr.push(value)
+      return arr
+    }),
+    setValue: (update, path, value) => update(path, v => value)
+  }
+  const store = Restore.create({}, actions)
+  store.observer(() => {
+    c++
+    let arr = store('a.b.c.d.arr')
+    if (arr) expect(arr[2]).toBe(0)
+    if (store('a.b.c.d.arr[1]') === 2 && c === 3) done()
+  })
+  store.makeArray('a.b.c.d.arr').pushToArray('a.b.c.d.arr', 0).pushToArray('a.b.c.d.arr', 0).pushToArray('a.b.c.d.arr', 0)
+  setTimeout(() => { store.setValue('a.b.c.d.arr[1]', 2) }, 0)
 })

@@ -21,7 +21,7 @@ class TimeMachine extends React.Component {
   componentWillMount () {
     this.store.api.feed((state, actions, internal) => {
       if (!internal) {
-        this.history.push({actions, state: clone(state)})
+        this.history.push({actions, state: clone.deep(state)})
         this.future = []
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
         this.forceUpdate()
