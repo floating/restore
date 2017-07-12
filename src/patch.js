@@ -2,19 +2,17 @@
   Patch objects, updates state with values returned from update methods
 */
 
-const invalid = key => !isNaN(key) || key.indexOf('[') !== -1 || key.indexOf(']') !== -1
+import clone from './clone'
+import pathway from './pathway'
 
-export const patch = (obj, path, value) => {
-  if (typeof path === 'string') path = path.split('.')
+export const patch = (obj, path, value, s) => {
+  path = s ? path : pathway(path)
   if (path.length > 1) {
     let key = path.shift()
-    if (invalid(key)) throw Error(`Invalid key "${key}" from path "${path}".`)
-    obj[key] = Object.prototype.toString.call(obj[key]) === '[object Object]' ? obj[key] : {}
-    patch(obj[key], path, value)
+    obj[key] = clone.shallow(obj[key])
+    patch(obj[key], path, value, true)
   } else {
-    let key = path[0]
-    if (invalid(key)) throw Error(`Invalid key "${key}" from path "${path}".`)
-    obj[key] = value
+    obj[path[0]] = value
   }
 }
 export default patch

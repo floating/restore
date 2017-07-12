@@ -10,7 +10,7 @@ import uuid from './uuid'
 import observe from './observe'
 
 export const create = (state = {}, actions = {}, options) => {
-  let internal = {state: clone(state), queued: false, queue: {normal: [], deferred: []}, watchers: {}, observatory: {track: '', order: [], links: {}, observers: {}, pending: []}}
+  let internal = {state: clone.deep(state), queued: false, queue: {normal: [], deferred: []}, watchers: {}, observatory: {track: '', order: [], links: {}, observers: {}, pending: []}}
   const store = (path) => {
     if (internal.observatory.track) {
       let id = internal.observatory.track
@@ -28,7 +28,7 @@ export const create = (state = {}, actions = {}, options) => {
     return { returned: observe(internal, id, run), remove: () => delete internal.observatory.observers[id] }
   }
   store.api = {
-    getState: () => clone(internal.state),
+    getState: () => clone.deep(internal.state),
     replaceState: state => {
       internal.state = state
       notify(internal, '*')
