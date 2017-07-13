@@ -309,48 +309,17 @@ test('Observer Reregister', done => {
         store.updateTestTwo()  // Updates Observer
       }, 0)
     }, 0)
-  })
-})
-
-test('Observer Reregister', done => {
-  let c = 0
-  let actions = {
-    updateTestOne: (update) => update('testOne', testOne => testOne + 1),
-    updateTestTwo: (update) => update('testTwo', testTwo => testTwo + 1)
-  }
-  const store = Restore.create({testOne: 0, testTwo: 0, testThree: 0}, actions)
-  store.observer(() => {
-    c++
-    if (store('testOne') === 2) {
-      if (store('testTwo') === 2) {
-        expect(c).toBe(4)
-        done()
-      } else {
-        expect(store('testTwo')).toBe(1)
-      }
-    } else {
-      expect(store('testThree')).toBe(0)
-    }
-  })
-  store.updateTestOne() // Updates Observer
-  setTimeout(() => {
-    store.updateTestTwo() // Doesn't Update Observer
-    setTimeout(() => {
-      store.updateTestOne() // Updates Observer
-      setTimeout(() => {
-        store.updateTestTwo()  // Updates Observer
-      }, 0)
-    }, 0)
   }, 0)
 })
 
 test('Immutability for PureComponents', done => {
-  let renderCounts = {PureA: 0, PureABX: 0, PureC: 0}
+  let renderCounts = {PureA: 0, PureABX: 0, PureC: 0, Pure: 0}
   class PureA extends React.PureComponent {
     render () {
       renderCounts.PureA++
       if (this.props.a.b.y.z === 3) {
         expect(renderCounts.PureABX).toBe(1)
+        expect(renderCounts.Pure).toBe(4)
         expect(renderCounts.PureA).toBe(4)
         expect(renderCounts.PureC).toBe(2)
         done()
@@ -373,12 +342,21 @@ test('Immutability for PureComponents', done => {
       return null
     }
   }
+  class Pure extends React.PureComponent {
+    render () {
+      renderCounts.Pure++
+      expect(this.props.store.a.b.x).toBe(0)
+      return null
+    }
+  }
   class App extends React.Component {
     render () {
       let a = this.store('a')
       let c = this.store('c')
+      let store = this.store()
       return (
         <div>
+          <Pure store={store} />
           <PureABX x={a.b.x} />
           <PureC c={c} />
           <PureA a={a} />
