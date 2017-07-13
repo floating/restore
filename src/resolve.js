@@ -35,6 +35,7 @@ export const resolve = (internal, action, tree = {}, name) => {
                 internal.state = action.update(clone.deep(internal.state), internal.state)
               }
             })
+            internal.state = clone.shallow(internal.state)
             internal.queue = {normal: [], deferred: []}
             notify(internal, paths)
             Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, actions)) // Notify all watchers
