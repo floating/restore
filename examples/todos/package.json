@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "react-scripts": "^1.0.7"
+    "react-scripts": "^1.0.10"
   },
   "dependencies": {
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
-    "react-restore": "0.0.3"
+    "react-restore": "0.0.9"
   },
   "scripts": {
     "start": "react-scripts start"
