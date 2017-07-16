@@ -65,7 +65,7 @@ test('Pure Render Components Test', done => {
   const Root = Restore.connect(Connected, store)
   ReactDOM.render(<Root />, document.createElement('div'))
   store.aabPlus()
-  setInterval(store.aaaPlus, 500)
+  setInterval(store.aaaPlus, 0)
 })
 
 test('Target Render Counts', done => {
@@ -399,4 +399,24 @@ test('Array Access', done => {
   })
   store.makeArray('a.b.c.d.arr').pushToArray('a.b.c.d.arr', 0).pushToArray('a.b.c.d.arr', 0).pushToArray('a.b.c.d.arr', 0)
   setTimeout(() => { store.setValue('a.b.c.d.arr[1]', 2) }, 0)
+})
+
+test('Read-only safeguard', done => {
+  let actions = {updateV: (update) => update('z.y.x.v', v => v + 1)}
+  const store = Restore.create({a: {b: 0}, z: {y: {x: {v: 0}}}}, actions)
+  store.observer(() => {
+    let a = store('a')
+    expect(() => { a.b = 1 }).toThrow()
+  })
+  store.observer(() => {
+    let z = store('z')
+    let y = z.y
+    expect(() => { y.x.v = 2 }).toThrow()
+    if (y.x.v === 1) {
+      expect(() => { y.x.v = 2 }).toThrow()
+      expect(y.x.v).toBe(1)
+      done()
+    }
+  })
+  store.updateV()
 })
