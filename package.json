@@ -1,8 +1,8 @@
 {
   "name": "react-restore",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A predictable and observable state container for React apps",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "author": "C. Jordan Muir <cjm712@gmail.com> (https://github.com/floating)",
   "files": [
     "lib"
@@ -10,7 +10,7 @@
   "scripts": {
     "test": "npm run build && jest && npm run size && standard",
     "build": "rollup -c rollup.config.js -f umd -n restore",
-    "prepublish": "npm test",
+    "prepublishOnly": "npm test",
     "size": "node -e \"process.stdout.write('Gzipped: ')\" && gzip-size lib/index.js",
     "watch": "npm run build && watch-run -p 'src/**' npm run build"
   },
@@ -31,7 +31,7 @@
     "jest-cli": "^20.0.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "rollup": "^0.43.0",
+    "rollup": "^0.45.2",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^2.0.1",
