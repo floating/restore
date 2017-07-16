@@ -25,7 +25,7 @@ export const create = (state = {}, actions = {}, options) => {
     id = id || uuid()
     if (internal.observatory.order.indexOf(id) === -1) internal.observatory.order.push(id)
     internal.observatory.observers[id] = {links: [], run: alt || run}
-    return { returned: observe(internal, id, run), remove: () => delete internal.observatory.observers[id] }
+    return { returned: observe(internal, id, run), remove: () => store.api.remove(id) }
   }
   store.api = {
     getState: () => clone.deep(internal.state),
