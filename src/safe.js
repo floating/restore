@@ -7,10 +7,11 @@ export const update = (obj, key, value) => {
 }
 
 export const object = obj => {
-  Object.keys(obj).forEach(name => {
-    if (typeof obj[name] === 'object') obj[name] = object(obj[name])
-    update(obj, name, obj[name])
-  })
+  if (typeof obj === 'object' && obj !== null) {
+    Object.keys(obj).forEach(name => {
+      update(obj, name, typeof obj[name] === 'object' ? object(obj[name]) : obj[name])
+    })
+  }
   return obj
 }
 
