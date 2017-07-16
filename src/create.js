@@ -8,9 +8,16 @@ import get from './get'
 import resolve from './resolve'
 import uuid from './uuid'
 import observe from './observe'
+import safe from './safe'
 
 export const create = (state = {}, actions = {}, options) => {
-  let internal = {state: clone.deep(state), queued: false, queue: {normal: [], deferred: []}, watchers: {}, observatory: {track: '', order: [], links: {}, observers: {}, pending: []}}
+  let internal = {
+    state: safe.object(clone.deep(state)),
+    queued: false,
+    queue: {normal: [], deferred: []},
+    watchers: {},
+    observatory: {track: '', order: [], links: {}, observers: {}, pending: []}
+  }
   const store = (path) => {
     if (internal.observatory.track) {
       let id = internal.observatory.track

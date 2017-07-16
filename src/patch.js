@@ -4,15 +4,21 @@
 
 import clone from './clone'
 import pathway from './pathway'
+import safe from './safe'
 
 export const patch = (obj, path, value, s) => {
   path = s ? path : pathway(path)
+  obj = clone.shallow(obj)
   if (path.length > 1) {
     let key = path.shift()
-    obj[key] = clone.shallow(obj[key])
-    patch(obj[key], path, value, true)
+    value = patch(obj[key], path, value, true)
+    safe.update(obj, key, value)
   } else {
-    obj[path[0]] = value
+    let key = path[0]
+    if (typeof value === 'object' && value !== null) value = clone.shallow(safe.object(value))
+    safe.update(obj, key, value)
   }
+  return obj
 }
+
 export default patch

@@ -6,6 +6,7 @@ import notify from './notify'
 import clone from './clone'
 import get from './get'
 import patch from './patch'
+import safe from './safe'
 
 export const resolve = (internal, action, tree = {}, name) => {
   if (typeof action === 'function') {
@@ -29,13 +30,12 @@ export const resolve = (internal, action, tree = {}, name) => {
               if (action.path) {
                 paths.push(action.path)
                 let part = get(internal.state, action.path)
-                patch(internal.state, action.path, action.update(clone.deep(part), internal.state))
+                internal.state = patch(internal.state, action.path, action.update(clone.deep(part), internal.state))
               } else {
                 paths.push('*')
-                internal.state = action.update(clone.deep(internal.state), internal.state)
+                internal.state = safe.object(action.update(clone.deep(internal.state), internal.state))
               }
             })
-            internal.state = clone.shallow(internal.state)
             internal.queue = {normal: [], deferred: []}
             notify(internal, paths)
             Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, actions)) // Notify all watchers
