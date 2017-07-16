@@ -44,6 +44,10 @@ export const create = (state = {}, actions = {}, options) => {
       if (p > -1) internal.observatory.pending.splice(p, 1)
       let o = internal.observatory.order.indexOf(id)
       if (o > -1) internal.observatory.order.splice(o, 1)
+      internal.observatory.observers[id].links.forEach(link => {
+        let l = internal.observatory.links[link].indexOf(id)
+        if (l > -1) internal.observatory.links[link].splice(l, 1)
+      })
       delete internal.observatory.observers[id]
     },
     report: id => {
