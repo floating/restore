@@ -4,21 +4,13 @@
 
 import clone from './clone'
 import pathway from './pathway'
-import safe from './safe'
+import freeze from './freeze'
 
-export const patch = (obj, path, value, s) => {
-  path = s ? path : pathway(path)
+export const patch = (obj, path, value) => {
+  path = pathway(path)
   obj = clone.shallow(obj)
-  if (path.length > 1) {
-    let key = path.shift()
-    value = patch(obj[key], path, value, true)
-    safe.update(obj, key, value)
-  } else {
-    let key = path[0]
-    if (typeof value === 'object' && value !== null) value = clone.shallow(safe.object(value))
-    safe.update(obj, key, value)
-  }
-  return obj
+  let key = path.shift()
+  obj[key] = path.length > 0 ? patch(obj[key], path, value) : freeze.deep(value)
+  return freeze.shallow(obj)
 }
-
 export default patch

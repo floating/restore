@@ -6,7 +6,7 @@ import notify from './notify'
 import clone from './clone'
 import get from './get'
 import patch from './patch'
-import safe from './safe'
+import freeze from './freeze'
 
 export const resolve = (internal, action, tree = {}, name) => {
   if (typeof action === 'function') {
@@ -33,7 +33,7 @@ export const resolve = (internal, action, tree = {}, name) => {
                 internal.state = patch(internal.state, action.path, action.update(clone.deep(part), internal.state))
               } else {
                 paths.push('*')
-                internal.state = safe.object(action.update(clone.deep(internal.state), internal.state))
+                internal.state = freeze.deep(action.update(clone.deep(internal.state), internal.state))
               }
             })
             internal.queue = {normal: [], deferred: []}

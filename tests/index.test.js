@@ -402,7 +402,7 @@ test('Array Access', done => {
 })
 
 test('Read-only safeguard', done => {
-  let actions = {updateV: (update) => update('z.y.x.v', v => v + 1)}
+  let actions = {updateV: (update) => update('z', z => { return {y: {x: {v: z.y.x.v + 1}}} })}
   const store = Restore.create({a: {b: 0}, z: {y: {x: {v: 0}}}}, actions)
   store.observer(() => {
     let a = store('a')
@@ -413,6 +413,7 @@ test('Read-only safeguard', done => {
     let y = z.y
     expect(() => { y.x.v = 2 }).toThrow()
     if (y.x.v === 1) {
+      expect(() => { y.x.o = 2 }).toThrow()
       expect(() => { y.x.v = 2 }).toThrow()
       expect(y.x.v).toBe(1)
       done()
