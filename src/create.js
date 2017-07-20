@@ -8,11 +8,11 @@ import get from './get'
 import resolve from './resolve'
 import uuid from './uuid'
 import observe from './observe'
-import safe from './safe'
+import freeze from './freeze'
 
 export const create = (state = {}, actions = {}, options) => {
   let internal = {
-    state: safe.object(clone.deep(state)),
+    state: freeze.deep(clone.deep(state)),
     queued: false,
     queue: {normal: [], deferred: []},
     watchers: {},
@@ -35,9 +35,9 @@ export const create = (state = {}, actions = {}, options) => {
     return { returned: observe(internal, id, run), remove: () => store.api.remove(id) }
   }
   store.api = {
-    getState: () => clone.deep(internal.state),
+    getState: () => internal.state,
     replaceState: state => {
-      internal.state = state
+      internal.state = freeze.deep(clone.deep(state))
       notify(internal, '*')
       Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, ['replaceState (internal)'], true)) // Notify all watchers
     },
