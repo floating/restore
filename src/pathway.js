@@ -8,4 +8,5 @@ export const pathway = path => {
   if (typeof path === 'string') return path.replace(/]\[|]|\[|]/g, '.').replace(/"|'|^\.+|\.+$/g, '').split('.')
   throw new Error('Invalid Path')
 }
+
 export default pathway

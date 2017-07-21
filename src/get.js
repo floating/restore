@@ -13,4 +13,5 @@ export const get = (obj, path) => {
   })
   return obj
 }
+
 export default get

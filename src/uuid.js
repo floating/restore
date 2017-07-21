@@ -10,4 +10,5 @@ export const uuid = () => {
     return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
   })
 }
+
 export default uuid
