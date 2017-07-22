@@ -2,7 +2,6 @@
   Create the store (Restore.create)
 */
 
-import clone from './clone'
 import freeze from './freeze'
 import get from './get'
 import notify from './notify'
@@ -12,7 +11,7 @@ import uuid from './uuid'
 
 export const create = (state = {}, actions = {}, options) => {
   const internal = {
-    state: freeze.deep(clone.deep(state)),
+    state: freeze.deep(state),
     queue: {paths: [], details: []},
     watchers: {},
     track: '',
@@ -21,7 +20,8 @@ export const create = (state = {}, actions = {}, options) => {
     observers: {},
     pending: []
   }
-  const store = (path) => {
+  const store = (...args) => {
+    let path = [...args].join('.')
     if (internal.track) {
       let id = internal.track
       internal.observers[id].links = internal.observers[id].links || []
@@ -40,7 +40,7 @@ export const create = (state = {}, actions = {}, options) => {
   store.api = {
     getState: () => internal.state,
     replaceState: state => {
-      internal.state = freeze.deep(clone.deep(state))
+      internal.state = freeze.deep(state)
       internal.queue.paths.push('*')
       notify(internal)
       Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, ['replaceState (internal)'], true)) // Notify all watchers

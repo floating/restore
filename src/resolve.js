@@ -12,10 +12,11 @@ export const resolve = (internal, action, tree = {}, name) => {
     return (...args) => {
       let count = 0
       let deferred = false
-      let update = (path = false, up) => {
-        if (typeof path === 'function') { up = path; path = false }
-        up = up(clone.deep(path ? get(internal.state, path) : internal.state), internal.state)
-        path = path || '*'
+      let update = (...args) => {
+        let a = [...args]
+        let up = a.pop()
+        let path = a.join('.') || '*'
+        up = up(clone.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
         internal.state = patch(internal.state, path, up)
         internal.queue.paths.push(path)
         internal.queue.details.push({name, count: count++, deferred, path})
