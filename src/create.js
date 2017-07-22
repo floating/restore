@@ -40,10 +40,11 @@ export const create = (state = {}, actions = {}, options) => {
   store.api = {
     getState: () => internal.state,
     replaceState: state => {
-      internal.state = freeze.deep(state)
+      state = freeze.deep(state)
       internal.queue.paths.push('*')
+      internal.queue.details.push({name: 'replaceState (internal)', count: 0, deferred: false, path: '*', value: state, internal: true})
+      internal.state = state
       notify(internal)
-      Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, ['replaceState (internal)'], true)) // Notify all watchers
     },
     feed: watcher => {
       let id = uuid()

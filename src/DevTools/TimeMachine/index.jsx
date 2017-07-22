@@ -19,11 +19,11 @@ class TimeMachine extends React.Component {
     return n + (s[(v - 20) % 10] || s[v] || s[0])
   }
   componentWillMount () {
-    this.store.api.feed((state, actions, internal) => {
-      if (!internal) {
-        let last = ''
-        let merged = []
-        actions.forEach(action => {
+    this.store.api.feed((state, details) => {
+      let last = ''
+      let merged = []
+      details.forEach(action => {
+        if (!action.internal) {
           let name = action.name
           delete action.name
           if (name !== last) {
@@ -32,7 +32,9 @@ class TimeMachine extends React.Component {
           } else {
             merged[merged.length - 1].updates.push(action)
           }
-        })
+        }
+      })
+      if (merged.length > 0) {
         this.history.push({state: clone.deep(state), merged})
         this.future = []
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
@@ -80,13 +82,15 @@ class TimeMachine extends React.Component {
       return path
     }
     const displayValue = (value) => {
-      if (value.constructor === Object) {
-        value = 'Object(' + Object.keys(value).length + ')'
-      } else if (value.constructor === Array) {
-        value = 'Array(' + value.length + ')'
-      } else {
-        value = JSON.stringify(value)
-        if (value.length > stringLength) value = value.substring(0, stringLength) + '...'
+      if (value !== undefined && value !== null) {
+        if (value.constructor === Object) {
+          value = 'Object(' + Object.keys(value).length + ')'
+        } else if (value.constructor === Array) {
+          value = 'Array(' + value.length + ')'
+        } else {
+          value = JSON.stringify(value)
+          if (value.length > stringLength) value = value.substring(0, stringLength) + '...'
+        }
       }
       return value
     }
@@ -162,6 +166,15 @@ class TimeMachine extends React.Component {
         borderRadius: '3px',
         fontSize: '12px',
         fontWeight: 'bold'
+      },
+      here: {
+        background: '#5e2fed',
+        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
+        padding: '7px',
+        borderRadius: '3px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: 'white'
       }
     }
     const onClick = () => {
@@ -174,7 +187,11 @@ class TimeMachine extends React.Component {
     return (
       <div style={style.bot}>
         <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
-        <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
+        {index === this.history.length - 1 && back ? (
+          <div style={style.here}>{'You Are Here'}</div>
+        ) : (
+          <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
+        )}
       </div>
     )
   }
@@ -196,7 +213,20 @@ class TimeMachine extends React.Component {
         borderRadius: '3px',
         boxShadow: '0px 1px 3px rgba(0,0,150,0.3)',
         background: 'rgba(255,255,255,0.8)',
-        padding: '10px'
+        padding: '10px',
+        position: 'relative'
+      },
+      current: {
+        position: 'absolute',
+        width: '30px',
+        height: '30px',
+        background: 'gold',
+        left: '-5px',
+        top: 'calc(50% - 15px)',
+        borderRadius: '15px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
       }
     }
     return (
