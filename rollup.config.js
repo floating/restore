@@ -23,7 +23,6 @@ export default {
       presets: ['react', ['es2015', {'modules': false}], 'stage-0'],
       plugins: ['external-helpers'],
       babelrc: false
-    }),
-    uglify()
+    })
   ]
 }

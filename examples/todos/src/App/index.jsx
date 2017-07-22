@@ -10,7 +10,7 @@ let App = () => (
     <Add />
     <List />
     <Filter />
-    <Restore.Dev />
+    <Restore.DevTools />
   </div>
 )
 

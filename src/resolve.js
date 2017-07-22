@@ -16,10 +16,10 @@ export const resolve = (internal, action, tree = {}, name) => {
         let a = [...args]
         let up = a.pop()
         let path = a.join('.') || '*'
-        up = up(clone.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
-        internal.state = patch(internal.state, path, up)
+        let value = up(clone.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
+        internal.state = patch(internal.state, path, value)
         internal.queue.paths.push(path)
-        internal.queue.details.push({name, count: count++, deferred, path})
+        internal.queue.details.push({name, count: count++, deferred, path, value})
         if (internal.queue.paths.length === 1) setTimeout(() => notify(internal), 0)
         setTimeout(() => { deferred = true }, 0)
       }

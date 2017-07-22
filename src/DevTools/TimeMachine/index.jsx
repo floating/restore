@@ -9,7 +9,7 @@ import clone from '../../clone'
 class TimeMachine extends React.Component {
   constructor (...args) {
     super(...args)
-    this.history = [{actions: [{name: 'initialState', count: 0, deferred: false}], state: this.context.store.api.getState()}]
+    this.history = [{state: clone.deep(this.context.store.api.getState()), merged: [{name: 'initalState', updates: []}]}]
     this.future = []
     this.state = {expand: false}
   }
@@ -21,7 +21,19 @@ class TimeMachine extends React.Component {
   componentWillMount () {
     this.store.api.feed((state, actions, internal) => {
       if (!internal) {
-        this.history.push({actions, state: clone.deep(state)})
+        let last = ''
+        let merged = []
+        actions.forEach(action => {
+          let name = action.name
+          delete action.name
+          if (name !== last) {
+            last = name
+            merged.push({name, updates: [action]})
+          } else {
+            merged[merged.length - 1].updates.push(action)
+          }
+        })
+        this.history.push({state: clone.deep(state), merged})
         this.future = []
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
         this.forceUpdate()
@@ -38,7 +50,8 @@ class TimeMachine extends React.Component {
     this.forceUpdate()
   }
   actionsToName (actions) {
-    return actions.map(action => action.name + (action.count ? ` (${this.ordinal(action.count + 1)} Update)` : '') + (action.deferred ? ' [deferred]' : '')).join(' > ')
+    console.log(actions)
+    // return actions.map(action => action.name + (action.count ? ` (${this.ordinal(action.count + 1)} Update)` : '') + (action.deferred ? ' [deferred]' : '')).join(' > ')
   }
   logState (state) {
     return e => {
@@ -46,28 +59,189 @@ class TimeMachine extends React.Component {
       console.log(state)
     }
   }
-  render () {
+  renderUpdates (action) {
+    let style = {
+      update: {},
+      updatePath: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        whitespace: 'nowrap',
+        overflow: 'hidden',
+        fontFamily: 'monospace',
+        padding: '5px',
+        borderTop: '1px solid rgba(0,0,100,0.1)',
+        fontSize: '13px'
+      }
+    }
+    let stringLength = 14
+    const displayPath = (path) => {
+      if (path.length > stringLength) path = '...' + path.substring(path.length - stringLength, path.length)
+      return path
+    }
+    const displayValue = (value) => {
+      if (value.constructor === Object) {
+        value = 'Object(' + Object.keys(value).length + ')'
+      } else if (value.constructor === Array) {
+        value = 'Array(' + value.length + ')'
+      } else {
+        value = JSON.stringify(value)
+        if (value.length > stringLength) value = value.substring(0, stringLength) + '...'
+      }
+      return value
+    }
+    const logUpdate = (path, value) => {
+      console.log(' ')
+      console.log('Updated Path: ' + path)
+      console.log(value)
+      console.log(' ')
+    }
     return (
-      <div style={{cursor: 'pointer', position: 'fixed', width: '300px', top: '0px', right: this.state.expand ? '0px' : '-303px', bottom: '0px', background: 'linear-gradient(45deg, rgb(168, 113, 255) 0%, #5e2fed 100%)', fontSize: '14px', fontFamily: 'sans-serif', transition: '0.4s all cubic-bezier(0.85, 0, 0.15, 1)', color: '#5e2fed', boxShadow: 'inset 0px 1px 3px rgba(0,0,150,0.3)', zIndex: '99999999'}}>
-        <div ref={(scroll) => { if (scroll) this.scroll = scroll }} style={{cursor: 'pointer', position: 'absolute', top: '0px', left: '0px', right: '0px', bottom: '30px', fontSize: '14px', fontFamily: 'sans-serif', overflow: 'scroll', padding: '0px 10px 0px 10px'}}>
-          {this.history.map((s, i) => {
-            return (
-              <div onClick={() => { this.timeTravel(i - this.history.length + 1) }} key={Math.random()} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '40px', marginTop: '10px', borderRadius: '3px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', background: this.history.length - 1 === i ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.8)'}}>
-                <div style={{margin: '10px'}}>{this.actionsToName(s.actions)}</div>
-                <div style={{margin: '10px', borderRadius: '3px', padding: '4px 6px', fontSize: '11px', cursor: 'pointer', zIndex: '20', border: '1px solid rgba(0,0,0,0.1)', whiteSpace: 'nowrap'}} onClick={this.logState(s.state)}>Log State</div>
+      <div>
+        {action.updates.map((update, i) => {
+          return (
+            <div key={i} style={style.update}>
+              <div style={style.updatePath} onClick={(e) => logUpdate(update.path, update.value)}>
+                <span>{displayPath(update.path)}</span>
+                <span>&nbsp;→&nbsp;</span>
+                <span style={{fontWeight: 'bold'}}>{displayValue(update.value)}</span>
               </div>
-            )
-          })}
-          {this.future.map((s, i) => {
-            return (
-              <div onClick={() => { this.timeTravel(i + 1) }} key={Math.random()} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '40px', marginTop: '10px', borderRadius: '3px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', background: 'rgba(255,255,255,0.8)'}}>
-                <div style={{margin: '10px'}}>{this.actionsToName(s.actions)}</div>
-                <div style={{margin: '10px', borderRadius: '3px', padding: '4px 6px', fontSize: '11px', cursor: 'pointer', zIndex: '20', border: '1px solid rgba(0,0,0,0.1)', whiteSpace: 'nowrap'}} onClick={this.logState(s.state)}>Log State</div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+  renderActions (batch) {
+    let style = {
+      action: {
+        borderRadius: '3px',
+        overflow: 'hidden',
+        background: 'rgba(255,255,255,0.6)',
+        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
+        marginBottom: '10px'
+      },
+      actionName: {
+        height: '40px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontWeight: 'bold',
+        background: 'rgba(255,255,255,0.8)'
+      }
+    }
+    return (
+      <div>
+        {batch.merged.map((action, i) => {
+          return (
+            <div key={i} style={style.action}>
+              <div style={style.actionName}>
+                <div>{action.name}</div>
               </div>
-            )
-          })}
-          <div style={{width: '100%', height: '50px'}} />
-        </div>
+              {this.renderUpdates(action)}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+  renderBot (batch, index, back) {
+    let style = {
+      bot: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        cursor: 'pointer',
+        zIndex: '20',
+        whiteSpace: 'nowrap'
+      },
+      button: {
+        background: 'rgba(255,255,255,0.8)',
+        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
+        padding: '7px',
+        borderRadius: '3px',
+        fontSize: '12px',
+        fontWeight: 'bold'
+      }
+    }
+    const onClick = () => {
+      if (back) {
+        this.timeTravel(index - this.history.length + 1)
+      } else {
+        this.timeTravel(index + 1)
+      }
+    }
+    return (
+      <div style={style.bot}>
+        <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
+        <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
+      </div>
+    )
+  }
+  renderTimeline () {
+    let style = {
+      timeline: {
+        cursor: 'pointer',
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        right: '0px',
+        bottom: '30px',
+        fontSize: '14px',
+        overflow: 'scroll',
+        padding: '0px 10px 0px 10px'
+      },
+      item: {
+        marginTop: '10px',
+        borderRadius: '3px',
+        boxShadow: '0px 1px 3px rgba(0,0,150,0.3)',
+        background: 'rgba(255,255,255,0.8)',
+        padding: '10px'
+      }
+    }
+    return (
+      <div ref={(scroll) => { if (scroll) this.scroll = scroll }} style={style.timeline}>
+        {this.history.map((batch, i) => {
+          return (
+            <div key={i} style={style.item}>
+              {this.renderActions(batch)}
+              {this.renderBot(batch, i, true)}
+            </div>
+          )
+        })}
+        {this.future.map((batch, i) => {
+          return (
+            <div key={i} style={style.item}>
+              {this.renderActions(batch)}
+              {this.renderBot(batch, i, false)}
+            </div>
+          )
+        })}
+        <div style={{width: '100%', height: '50px'}} />
+      </div>
+    )
+  }
+  render () {
+    let style = {
+      timeMachine: {
+        cursor: 'pointer',
+        position: 'fixed',
+        width: '350px',
+        top: '0px',
+        right: this.state.expand ? '0px' : '-353px',
+        bottom: '0px',
+        background: 'linear-gradient(45deg, rgb(168, 113, 255) 0%, #5e2fed 100%)',
+        fontSize: '14px',
+        fontFamily: 'sans-serif',
+        transition: '0.4s all cubic-bezier(0.85, 0, 0.15, 1)',
+        color: '#5e2fed',
+        boxShadow: 'inset 0px 1px 3px rgba(0,0,150,0.3)',
+        zIndex: '99999999'
+      }
+    }
+    return (
+      <div style={style.timeMachine}>
+        {this.renderTimeline()}
         <div onClick={() => { this.setState({expand: !this.state.expand}) }} style={{position: 'absolute', borderRadius: '50%', background: '#f7f7f7', border: '3px solid rgba(255,255,255,1)', bottom: '50%', left: '-54px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)'}}>
           <div style={{height: '36px', width: '36px', borderRadius: '50%', background: 'linear-gradient(45deg, rgb(168, 113, 255) 0%, #5e2fed 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <svg width='16px' height='24px' viewBox='0 0 12 16' version='1.1'>
