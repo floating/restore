@@ -8,7 +8,7 @@ import pathway from './pathway'
 
 export const patch = (obj, path, value) => {
   if (path === '*') return freeze.deep(value)
-  path = pathway(path)
+  path = pathway.split(path)
   obj = clone.shallow(obj)
   let key = path.shift()
   obj[key] = path.length > 0 ? patch(obj[key], path, value) : freeze.deep(value)

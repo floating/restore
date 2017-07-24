@@ -20,15 +20,13 @@ class TimeMachine extends React.Component {
   }
   componentWillMount () {
     this.store.api.feed((state, details) => {
-      let last = ''
       let merged = []
       details.forEach(action => {
         if (!action.internal) {
           let name = action.name
           delete action.name
-          if (name !== last) {
-            last = name
-            merged.push({name, updates: [action]})
+          if (action.count === -1) {
+            merged.push({name, updates: []})
           } else {
             merged[merged.length - 1].updates.push(action)
           }
@@ -119,19 +117,19 @@ class TimeMachine extends React.Component {
   renderActions (batch) {
     let style = {
       action: {
-        borderRadius: '3px',
+        // borderRadius: '3px',
         overflow: 'hidden',
-        background: 'rgba(255,255,255,0.6)',
-        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
-        marginBottom: '10px'
+        background: 'rgba(255,255,255,0.9)',
+        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)'
+        // marginBottom: '10px'
       },
       actionName: {
-        height: '40px',
+        height: '30px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         fontWeight: 'bold',
-        background: 'rgba(255,255,255,0.8)'
+        background: 'rgba(255,255,255,1)'
       }
     }
     return (
@@ -152,6 +150,7 @@ class TimeMachine extends React.Component {
   renderBot (batch, index, back) {
     let style = {
       bot: {
+        marginTop: '10px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -160,21 +159,30 @@ class TimeMachine extends React.Component {
         whiteSpace: 'nowrap'
       },
       button: {
-        background: 'rgba(255,255,255,0.8)',
-        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
-        padding: '7px',
-        borderRadius: '3px',
-        fontSize: '12px',
-        fontWeight: 'bold'
-      },
-      here: {
-        background: '#5e2fed',
-        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
+        // background: 'rgba(255,255,255,0.8)',
+        // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
         padding: '7px',
         borderRadius: '3px',
         fontSize: '12px',
         fontWeight: 'bold',
+        border: '1px solid rgba(0,0,100,0.2)',
         color: 'white'
+      },
+      here: {
+        // background: '#5e2fed',
+        // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
+        // padding: '7px',
+        // borderRadius: '3px',
+        // fontSize: '12px',
+        // fontWeight: 'bold',
+
+        padding: '7px',
+        borderRadius: '3px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        border: '1px solid rgba(0,0,100,0.2)',
+        color: 'white',
+        background: 'linear-gradient(45deg, rgba(168, 113, 255, 0.2) 0%, rgba(168, 113, 255, 0) 100%)'
       }
     }
     const onClick = () => {
@@ -186,12 +194,12 @@ class TimeMachine extends React.Component {
     }
     return (
       <div style={style.bot}>
-        <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
         {index === this.history.length - 1 && back ? (
-          <div style={style.here}>{'You Are Here'}</div>
+          <div style={style.here}>{'You\'re Here'}</div>
         ) : (
           <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
         )}
+        <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
       </div>
     )
   }
@@ -210,10 +218,6 @@ class TimeMachine extends React.Component {
       },
       item: {
         marginTop: '10px',
-        borderRadius: '3px',
-        boxShadow: '0px 1px 3px rgba(0,0,150,0.3)',
-        background: 'rgba(255,255,255,0.8)',
-        padding: '10px',
         position: 'relative'
       },
       current: {

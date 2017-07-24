@@ -7,6 +7,8 @@ class Add extends React.Component {
     if (!this.input.value.trim()) return
     this.store.addTodo(this.input.value)
     this.store.toggleTodo(0)
+    this.store.addTodo(this.input.value)
+    this.store.addTodo(this.input.value)
     this.input.value = ''
   }
   render () {

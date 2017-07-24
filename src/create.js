@@ -6,6 +6,7 @@ import freeze from './freeze'
 import get from './get'
 import notify from './notify'
 import observe from './observe'
+import pathway from './pathway'
 import resolve from './resolve'
 import uuid from './uuid'
 
@@ -21,7 +22,7 @@ export const create = (state = {}, actions = {}, options) => {
     pending: []
   }
   const store = (...args) => {
-    let path = [...args].join('.')
+    let path = pathway([...args])
     if (internal.track) {
       let id = internal.track
       internal.observers[id].links = internal.observers[id].links || []
@@ -35,7 +36,7 @@ export const create = (state = {}, actions = {}, options) => {
     id = id || uuid()
     if (internal.order.indexOf(id) === -1) internal.order.push(id)
     internal.observers[id] = {links: [], run: alt || run}
-    return { returned: observe(internal, id, run), remove: () => store.api.remove(id) }
+    return {returned: observe(internal, id, run), remove: () => store.api.remove(id)}
   }
   store.api = {
     getState: () => internal.state,

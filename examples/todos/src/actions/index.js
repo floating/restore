@@ -6,6 +6,16 @@ export const addTodo = (update, text) => {
     todos.push(todo)
     return todos
   })
+  update('todos', todos => {
+    let todo = {id: nextTodoId++, text, completed: false}
+    todos.push(todo)
+    return todos
+  })
+  update('todos', todos => {
+    let todo = {id: nextTodoId++, text, completed: false}
+    todos.push(todo)
+    return todos
+  })
 }
 
 export const toggleTodo = (update, id) => {

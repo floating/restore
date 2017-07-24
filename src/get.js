@@ -5,7 +5,7 @@
 import pathway from './pathway'
 
 export const get = (obj, path) => {
-  path = pathway(path)
+  path = pathway.split(path)
   path.some((key, i) => {
     if (typeof obj !== 'object') throw Error(`Get path '${path.join('.')}' cannot navigate past key '${path[i - 1]}', '${path[i - 1]}' is non-object value '${obj}'.`)
     obj = obj[key]
