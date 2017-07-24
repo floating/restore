@@ -8,7 +8,7 @@ import connect from '../../connect'
 class TimeMachine extends React.Component {
   constructor (...args) {
     super(...args)
-    this.history = [{state: this.context.store.api.getState(), obs: 0, actions: [{name: 'initialState', count: 0, updates: []}]}]
+    this.history = [{state: this.context.store(), obs: 0, actions: [{name: 'initialState', count: 0, updates: []}]}]
     this.future = []
     this.state = {expand: false}
   }

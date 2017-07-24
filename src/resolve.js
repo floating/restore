@@ -2,7 +2,7 @@
   Resolves actions passed during create
 */
 
-import clone from './clone'
+import thaw from './thaw'
 import get from './get'
 import notify from './notify'
 import patch from './patch'
@@ -21,7 +21,7 @@ export const resolve = (internal, action, tree = {}, name) => {
         args = [...args]
         let up = args.pop()
         let path = pathway(args) || '*'
-        let value = up(clone.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
+        let value = up(thaw.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
         internal.state = patch(internal.state, path, value)
         internal.queue.paths.push(path)
         let last = internal.queue.actions[internal.queue.actions.length - 1]

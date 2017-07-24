@@ -39,7 +39,6 @@ export const create = (state = {}, actions = {}, options) => {
     return {returned: observe(internal, id, run), remove: () => store.api.remove(id)}
   }
   store.api = {
-    getState: () => internal.state,
     replaceState: state => {
       state = freeze.deep(state)
       internal.queue.paths.push('*')

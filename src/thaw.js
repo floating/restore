@@ -1,6 +1,12 @@
 /*
-  Clone JSON objects
+  Thaw objects
 */
+
+export const shallow = o => {
+  if (!o) return {}
+  if (Object.prototype.toString.call(o) === '[object Object]') return Object.assign({}, o)
+  if (Object.prototype.toString.call(o) === '[object Array]') return o.slice(0)
+}
 
 export const deep = o => {
   let n, i
@@ -14,12 +20,6 @@ export const deep = o => {
   n = {}
   for (i in o) n[i] = deep(o[i])
   return n
-}
-
-export const shallow = o => {
-  if (!o) return {}
-  if (Object.prototype.toString.call(o) === '[object Object]') return Object.assign({}, o)
-  if (Object.prototype.toString.call(o) === '[object Array]') return o.slice(0)
 }
 
 export default {deep, shallow}
