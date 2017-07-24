@@ -13,7 +13,7 @@ import uuid from './uuid'
 export const create = (state = {}, actions = {}, options) => {
   const internal = {
     state: freeze.deep(state),
-    queue: {paths: [], details: [], actions: []},
+    queue: {paths: [], actions: []},
     watchers: {},
     track: '',
     order: [],

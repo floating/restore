@@ -16,8 +16,8 @@ export const notify = internal => {
   expand(internal).forEach(target => { internal.pending = internal.pending.concat(internal.links[target]) })
   internal.pending = [...new Set(internal.pending)]
   internal.pending.sort((a, b) => internal.order.indexOf(a) - internal.order.indexOf(b))
+  Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, internal.queue.actions, internal.pending.length))
   process(internal) // Process all pending observers
-  Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, internal.queue.actions))
   internal.queue = {paths: [], actions: []}
 }
 

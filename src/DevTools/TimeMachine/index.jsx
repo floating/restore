@@ -4,12 +4,11 @@
 
 import React from 'react'
 import connect from '../../connect'
-import clone from '../../clone'
 
 class TimeMachine extends React.Component {
   constructor (...args) {
     super(...args)
-    this.history = [{state: this.context.store.api.getState(), actions: [{name: 'initialState', count: 0, updates: []}]}]
+    this.history = [{state: this.context.store.api.getState(), obs: 0, actions: [{name: 'initialState', count: 0, updates: []}]}]
     this.future = []
     this.state = {expand: false}
   }
@@ -19,11 +18,10 @@ class TimeMachine extends React.Component {
     return n + (s[(v - 20) % 10] || s[v] || s[0])
   }
   componentWillMount () {
-    this.store.api.feed((state, actions) => {
-      console.log(state, actions)
+    this.store.api.feed((state, actions, obs) => {
       actions = actions.filter(a => !a.internal)
       if (actions.length > 0) {
-        this.history.push({state: clone.deep(state), actions})
+        this.history.push({state, actions, obs})
         this.future = []
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
         this.forceUpdate()
@@ -140,7 +138,7 @@ class TimeMachine extends React.Component {
       </div>
     )
   }
-  renderBot (state, index, back) {
+  renderBot (batch, index, back) {
     let style = {
       bot: {
         marginTop: '10px',
@@ -149,7 +147,8 @@ class TimeMachine extends React.Component {
         alignItems: 'center',
         cursor: 'pointer',
         zIndex: '20',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        color: 'white'
       },
       button: {
         // background: 'rgba(255,255,255,0.8)',
@@ -158,8 +157,7 @@ class TimeMachine extends React.Component {
         borderRadius: '3px',
         fontSize: '12px',
         fontWeight: 'bold',
-        border: '1px solid rgba(0,0,100,0.2)',
-        color: 'white'
+        border: '1px solid rgba(0,0,100,0.2)'
       },
       here: {
         // background: '#5e2fed',
@@ -174,7 +172,7 @@ class TimeMachine extends React.Component {
         fontSize: '12px',
         fontWeight: 'bold',
         border: '1px solid rgba(0,0,100,0.2)',
-        color: 'white',
+
         background: 'linear-gradient(45deg, rgba(168, 113, 255, 0.2) 0%, rgba(168, 113, 255, 0) 100%)'
       }
     }
@@ -187,12 +185,16 @@ class TimeMachine extends React.Component {
     }
     return (
       <div style={style.bot}>
-        {index === this.history.length - 1 && back ? (
-          <div style={style.here}>{'You\'re Here'}</div>
-        ) : (
-          <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
-        )}
-        <div style={style.button} onClick={this.logState(state)}>{'Log State'}</div>
+        <div>{'Notified ' + batch.obs + ' Observers'}</div>
+        <div>
+          {index === this.history.length - 1 && back ? (
+            <div style={style.here}>{'You\'re Here'}</div>
+          ) : (
+            <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
+          )}
+          <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
+        </div>
+
       </div>
     )
   }
@@ -229,11 +231,10 @@ class TimeMachine extends React.Component {
     return (
       <div ref={(scroll) => { if (scroll) this.scroll = scroll }} style={style.timeline}>
         {this.history.map((batch, i) => {
-          console.log(batch)
           return (
             <div key={i} style={style.item}>
               {this.renderActions(batch.actions)}
-              {this.renderBot(batch.state, i, true)}
+              {this.renderBot(batch, i, true)}
             </div>
           )
         })}
@@ -241,7 +242,7 @@ class TimeMachine extends React.Component {
           return (
             <div key={i} style={style.item}>
               {this.renderActions(batch.actions)}
-              {this.renderBot(batch.state, i, false)}
+              {this.renderBot(batch, i, false)}
             </div>
           )
         })}
