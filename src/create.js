@@ -13,7 +13,7 @@ import uuid from './uuid'
 export const create = (state = {}, actions = {}, options) => {
   const internal = {
     state: freeze.deep(state),
-    queue: {paths: [], details: []},
+    queue: {paths: [], details: [], actions: []},
     watchers: {},
     track: '',
     order: [],
@@ -43,7 +43,7 @@ export const create = (state = {}, actions = {}, options) => {
     replaceState: state => {
       state = freeze.deep(state)
       internal.queue.paths.push('*')
-      internal.queue.details.push({name: 'replaceState (internal)', count: 0, deferred: false, path: '*', value: state, internal: true})
+      internal.queue.actions.push({name: 'api.replaceState', count: 0, internal: true, updates: [{path: '*', value: state}]})
       internal.state = state
       notify(internal)
     },

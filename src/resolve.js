@@ -8,11 +8,15 @@ import notify from './notify'
 import patch from './patch'
 import pathway from './pathway'
 
+const record = {}
+
 export const resolve = (internal, action, tree = {}, name) => {
   if (typeof action === 'function') {
     return (...args) => {
-      let count = 0
       let deferred = false
+      let count = record[name] = ++record[name] || 1
+      internal.queue.actions.push({name, count, deferred, updates: []})
+      if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
       let update = (...args) => {
         args = [...args]
         let up = args.pop()
@@ -20,10 +24,14 @@ export const resolve = (internal, action, tree = {}, name) => {
         let value = up(clone.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
         internal.state = patch(internal.state, path, value)
         internal.queue.paths.push(path)
-        internal.queue.details.push({name, count: count++, deferred, path})
+        let last = internal.queue.actions[internal.queue.actions.length - 1]
+        if (last && last.name === name && last.count === count) {
+          last.updates.push({path, value})
+        } else {
+          internal.queue.actions.push({name, count, deferred, updates: [{path, value}]})
+          if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
+        }
       }
-      if (internal.queue.details.length === 0) setTimeout(() => notify(internal), 0)
-      internal.queue.details.push({name, count: -1})
       action(update, ...args)
       setTimeout(() => { deferred = true }, 0)
       return internal.store

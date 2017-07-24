@@ -17,8 +17,8 @@ export const notify = internal => {
   internal.pending = [...new Set(internal.pending)]
   internal.pending.sort((a, b) => internal.order.indexOf(a) - internal.order.indexOf(b))
   process(internal) // Process all pending observers
-  Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, internal.queue.details))
-  internal.queue = {paths: [], details: []}
+  Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, internal.queue.actions))
+  internal.queue = {paths: [], actions: []}
 }
 
 export default notify

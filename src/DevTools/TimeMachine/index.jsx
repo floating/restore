@@ -9,7 +9,7 @@ import clone from '../../clone'
 class TimeMachine extends React.Component {
   constructor (...args) {
     super(...args)
-    this.history = [{state: clone.deep(this.context.store.api.getState()), merged: [{name: 'initalState', updates: []}]}]
+    this.history = [{state: this.context.store.api.getState(), actions: [{name: 'initialState', count: 0, updates: []}]}]
     this.future = []
     this.state = {expand: false}
   }
@@ -19,21 +19,11 @@ class TimeMachine extends React.Component {
     return n + (s[(v - 20) % 10] || s[v] || s[0])
   }
   componentWillMount () {
-    this.store.api.feed((state, details) => {
-      let merged = []
-      details.forEach(action => {
-        if (!action.internal) {
-          let name = action.name
-          delete action.name
-          if (action.count === -1) {
-            merged.push({name, updates: []})
-          } else {
-            merged[merged.length - 1].updates.push(action)
-          }
-        }
-      })
-      if (merged.length > 0) {
-        this.history.push({state: clone.deep(state), merged})
+    this.store.api.feed((state, actions) => {
+      console.log(state, actions)
+      actions = actions.filter(a => !a.internal)
+      if (actions.length > 0) {
+        this.history.push({state: clone.deep(state), actions})
         this.future = []
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
         this.forceUpdate()
@@ -59,7 +49,7 @@ class TimeMachine extends React.Component {
       console.log(state)
     }
   }
-  renderUpdates (action) {
+  renderUpdates (updates) {
     let style = {
       update: {},
       updatePath: {
@@ -100,7 +90,7 @@ class TimeMachine extends React.Component {
     }
     return (
       <div>
-        {action.updates.map((update, i) => {
+        {updates.map((update, i) => {
           return (
             <div key={i} style={style.update}>
               <div style={style.updatePath} onClick={(e) => logUpdate(update.path, update.value)}>
@@ -114,7 +104,7 @@ class TimeMachine extends React.Component {
       </div>
     )
   }
-  renderActions (batch) {
+  renderActions (actions) {
     let style = {
       action: {
         // borderRadius: '3px',
@@ -124,30 +114,33 @@ class TimeMachine extends React.Component {
         // marginBottom: '10px'
       },
       actionName: {
-        height: '30px',
+        // height: '30px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'column',
         fontWeight: 'bold',
         background: 'rgba(255,255,255,1)'
       }
     }
     return (
       <div>
-        {batch.merged.map((action, i) => {
+        {actions.map((action, i) => {
           return (
             <div key={i} style={style.action}>
               <div style={style.actionName}>
                 <div>{action.name}</div>
+                <div>{'deferred: ' + action.deferred}</div>
+                <div>{'count: ' + action.count}</div>
               </div>
-              {this.renderUpdates(action)}
+              {this.renderUpdates(action.updates)}
             </div>
           )
         })}
       </div>
     )
   }
-  renderBot (batch, index, back) {
+  renderBot (state, index, back) {
     let style = {
       bot: {
         marginTop: '10px',
@@ -199,7 +192,7 @@ class TimeMachine extends React.Component {
         ) : (
           <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
         )}
-        <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
+        <div style={style.button} onClick={this.logState(state)}>{'Log State'}</div>
       </div>
     )
   }
@@ -236,18 +229,19 @@ class TimeMachine extends React.Component {
     return (
       <div ref={(scroll) => { if (scroll) this.scroll = scroll }} style={style.timeline}>
         {this.history.map((batch, i) => {
+          console.log(batch)
           return (
             <div key={i} style={style.item}>
-              {this.renderActions(batch)}
-              {this.renderBot(batch, i, true)}
+              {this.renderActions(batch.actions)}
+              {this.renderBot(batch.state, i, true)}
             </div>
           )
         })}
         {this.future.map((batch, i) => {
           return (
             <div key={i} style={style.item}>
-              {this.renderActions(batch)}
-              {this.renderBot(batch, i, false)}
+              {this.renderActions(batch.actions)}
+              {this.renderBot(batch.state, i, false)}
             </div>
           )
         })}
