@@ -19,7 +19,8 @@ export const create = (state = {}, actions = {}, options) => {
     order: [],
     links: {},
     observers: {},
-    pending: []
+    pending: [],
+    count: {}
   }
   const store = (...args) => {
     let path = pathway([...args])

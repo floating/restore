@@ -5,12 +5,25 @@
 import React from 'react'
 import connect from '../../connect'
 
+import icons from '../icons'
+
+const color = {
+  a: '#dbe4f5',
+  b: 'rgb(237, 244, 255)',
+  c: '#f5f9ff',
+  d: 'white',
+  z: 'rgb(230, 238, 253)',
+  text: 'rgb(61, 90, 144)',
+  good: '#49e6b4',
+  bad: 'red'
+}
+
 class TimeMachine extends React.Component {
   constructor (...args) {
     super(...args)
     this.history = [{state: this.context.store(), obs: 0, actions: [{name: 'initialState', count: 0, updates: []}]}]
     this.future = []
-    this.state = {expand: false}
+    this.state = {expand: true}
   }
   ordinal (n) {
     let s = ['th', 'st', 'nd', 'rd']
@@ -58,7 +71,8 @@ class TimeMachine extends React.Component {
         overflow: 'hidden',
         fontFamily: 'monospace',
         padding: '5px',
-        borderTop: '1px solid rgba(0,0,100,0.1)',
+        background: color.b,
+        // borderBottom: `1px solid ${color.z}`,
         fontSize: '13px'
       }
     }
@@ -93,7 +107,7 @@ class TimeMachine extends React.Component {
             <div key={i} style={style.update}>
               <div style={style.updatePath} onClick={(e) => logUpdate(update.path, update.value)}>
                 <span>{displayPath(update.path)}</span>
-                <span>&nbsp;→&nbsp;</span>
+                <span>&nbsp;=&nbsp;</span>
                 <span style={{fontWeight: 'bold'}}>{displayValue(update.value)}</span>
               </div>
             </div>
@@ -107,18 +121,20 @@ class TimeMachine extends React.Component {
       action: {
         // borderRadius: '3px',
         overflow: 'hidden',
-        background: 'rgba(255,255,255,0.9)',
-        boxShadow: '0px 0px 1px rgba(75,0,150,0.4)'
+        background: color.d,
+        color: color.text
+        // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)'
         // marginBottom: '10px'
       },
       actionName: {
-        // height: '30px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column',
         fontWeight: 'bold',
-        background: 'rgba(255,255,255,1)'
+        brderBottom: `1px solid ${color.z}`,
+        justifyContent: 'space-between',
+        padding: '5px'
+        // background: 'rgba(255,255,255,1)'
       }
     }
     return (
@@ -128,8 +144,7 @@ class TimeMachine extends React.Component {
             <div key={i} style={style.action}>
               <div style={style.actionName}>
                 <div>{action.name}</div>
-                <div>{'deferred: ' + action.deferred}</div>
-                <div>{'count: ' + action.count}</div>
+                {action.deferred ? <div>{icons.cycle({color: color.text})}</div> : null}
               </div>
               {this.renderUpdates(action.updates)}
             </div>
@@ -138,26 +153,106 @@ class TimeMachine extends React.Component {
       </div>
     )
   }
-  renderBot (batch, index, back) {
+  renderDetails (batch) {
+    let style = {
+      details: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // padding: 'px',
+        fontSize: '10px',
+        fontWeight: 'bold',
+        // height: '40px',
+        background: color.c,
+        color: color.text,
+        // fontWeight: 'bold',
+        textTransform: 'uppercase'
+      },
+      detail: {
+        flexGrow: 1,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: '5px 0px 7px 0px'
+      },
+      display: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: '3px'
+      },
+      icon: {
+        padding: '6px'
+      },
+      count: {
+        fontSize: '23px'
+      },
+      text: {
+        padding: '0px 0px 4px 4px'
+      }
+    }
+    let actionCount = batch.actions.length
+    let updateCount = 0
+    batch.actions.forEach(action => { updateCount += action.updates.length })
+    let observerCount = batch.obs
+    return (
+      <div style={style.details}>
+        <div style={style.detail}>
+          <div style={style.display}>
+            <div style={style.icon}>{icons.radio({color: color.text})}</div>
+            <div style={style.count}>{actionCount}</div>
+          </div>
+          <div style={style.text}>{actionCount === 1 ? 'action' : 'actions'}</div>
+        </div>
+        <div style={style.detail}>
+          <div style={style.display}>
+            <div style={style.icon}>{icons.merge({color: color.text})}</div>
+            <div style={style.count}>{updateCount}</div>
+          </div>
+          <div style={style.text}>{updateCount === 1 ? 'update' : 'updates'}</div>
+        </div>
+        <div style={style.detail}>
+          <div style={style.display}>
+            <div style={style.icon}>{icons.telescope({color: color.text})}</div>
+            <div style={style.count}>{observerCount}</div>
+          </div>
+          <div style={style.text}>{observerCount === 1 ? 'observer' : 'observers'}</div>
+        </div>
+      </div>
+    )
+  }
+  renderPoint (batch, index, back) {
     let style = {
       bot: {
-        marginTop: '10px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         cursor: 'pointer',
         zIndex: '20',
         whiteSpace: 'nowrap',
-        color: 'white'
+        background: color.z,
+        height: '40px',
+        color: color.text,
+        margin: '10px 0px',
+        borderRadius: '25px'
       },
       button: {
         // background: 'rgba(255,255,255,0.8)',
         // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
-        padding: '7px',
-        borderRadius: '3px',
+        padding: '0px 20px',
+        height: '100%',
+        //width: '100px',
         fontSize: '12px',
         fontWeight: 'bold',
-        border: '1px solid rgba(0,0,100,0.2)'
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // border: '1px solid rgba(0,0,0,0.1)',
+        margin: '10px 0px',
+        borderRadius: '20px'
+        // ,
+        // background: color.z
       },
       here: {
         // background: '#5e2fed',
@@ -166,14 +261,10 @@ class TimeMachine extends React.Component {
         // borderRadius: '3px',
         // fontSize: '12px',
         // fontWeight: 'bold',
+        // borderRight: `1px solid ${color.a}`,
+        background: color.good
 
-        padding: '7px',
-        borderRadius: '3px',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        border: '1px solid rgba(0,0,100,0.2)',
-
-        background: 'linear-gradient(45deg, rgba(168, 113, 255, 0.2) 0%, rgba(168, 113, 255, 0) 100%)'
+        // background: 'linear-gradient(45deg, rgba(168, 113, 255, 0.2) 0%, rgba(168, 113, 255, 0) 100%)'
       }
     }
     const onClick = () => {
@@ -185,16 +276,12 @@ class TimeMachine extends React.Component {
     }
     return (
       <div style={style.bot}>
-        <div>{'Notified ' + batch.obs + ' Observers'}</div>
-        <div>
-          {index === this.history.length - 1 && back ? (
-            <div style={style.here}>{'You\'re Here'}</div>
-          ) : (
-            <div style={style.button} onClick={onClick}>{'Travel Here'}</div>
-          )}
-          <div style={style.button} onClick={this.logState(batch.state)}>{'Log State'}</div>
-        </div>
-
+        {index === this.history.length - 1 && back ? (
+          <div style={{...style.button, ...style.here}}>{'Current'}</div>
+        ) : (
+          <div style={{...style.button}} onClick={onClick}>{'Travel Here'}</div>
+        )}
+        <div style={{...style.button}} onClick={this.logState(batch.state)}>{'Log State'}</div>
       </div>
     )
   }
@@ -210,10 +297,9 @@ class TimeMachine extends React.Component {
         fontSize: '14px',
         overflow: 'scroll',
         padding: '0px 10px 0px 10px'
+        // background: '#38344a'
       },
       item: {
-        marginTop: '10px',
-        position: 'relative'
       },
       current: {
         position: 'absolute',
@@ -228,24 +314,44 @@ class TimeMachine extends React.Component {
         alignItems: 'center'
       }
     }
+
+    let item = (batch, i, back) => {
+      return (
+        <div key={i} style={style.item}>
+          {i === 0 && back ? null : this.renderActions(batch.actions)}
+          {i === 0 && back ? null : this.renderDetails(batch)}
+          {this.renderPoint(batch, i, back)}
+        </div>
+      )
+    }
+
     return (
       <div ref={(scroll) => { if (scroll) this.scroll = scroll }} style={style.timeline}>
-        {this.history.map((batch, i) => {
-          return (
-            <div key={i} style={style.item}>
-              {this.renderActions(batch.actions)}
-              {this.renderBot(batch, i, true)}
-            </div>
-          )
-        })}
-        {this.future.map((batch, i) => {
-          return (
-            <div key={i} style={style.item}>
-              {this.renderActions(batch.actions)}
-              {this.renderBot(batch, i, false)}
-            </div>
-          )
-        })}
+        <div style={{
+          // height: '100px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          // fontWeight: 'bold',
+          // background: 'linear-gradient(0deg, #3b26a8 0%, #452a9d 100%)',
+          // background: '#4c2b92',
+          // background: `linear-gradient(10deg, rgb(68, 63, 93) 0%, #4f6c98 100%)`,
+
+          marginTop: '10px',
+          //borderTopLeftRadius: '5px',
+          //borderTopRightRadius: '5px',
+          height: '150px'
+          //borderBottom: `1px solid ${color.a}`,
+          //boxShadow: '0px 0px 4px rgba(200,0,200,0.7)'
+          // background: color.z
+          }}>
+
+          header
+
+        </div>
+        {this.history.map((batch, i) => item(batch, i, true))}
+        {this.future.map((batch, i) => item(batch, i, false))}
         <div style={{width: '100%', height: '50px'}} />
       </div>
     )
@@ -255,52 +361,72 @@ class TimeMachine extends React.Component {
       timeMachine: {
         cursor: 'pointer',
         position: 'fixed',
-        width: '350px',
+        width: '342px',
         top: '0px',
         right: this.state.expand ? '0px' : '-353px',
         bottom: '0px',
-        background: 'linear-gradient(45deg, rgb(168, 113, 255) 0%, #5e2fed 100%)',
+        background: color.a,
         fontSize: '14px',
         fontFamily: 'sans-serif',
         transition: '0.4s all cubic-bezier(0.85, 0, 0.15, 1)',
-        color: '#5e2fed',
-        boxShadow: 'inset 0px 1px 3px rgba(0,0,150,0.3)',
+        color: color.text,
+        // boxShadow: 'inset 0px 1px 3px rgba(0,0,150,0.3)',
         zIndex: '99999999'
+      },
+      clock: {
+        height: '36px',
+        width: '36px',
+        borderTopLeftRadius: '50%',
+        // background: 'linear-gradient(45deg, rgb(168, 113, 255) 0%, #5e2fed 100%)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
       }
     }
     return (
       <div style={style.timeMachine}>
         {this.renderTimeline()}
-        <div onClick={() => { this.setState({expand: !this.state.expand}) }} style={{position: 'absolute', borderRadius: '50%', background: '#f7f7f7', border: '3px solid rgba(255,255,255,1)', bottom: '50%', left: '-54px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)'}}>
-          <div style={{height: '36px', width: '36px', borderRadius: '50%', background: 'linear-gradient(45deg, rgb(168, 113, 255) 0%, #5e2fed 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <svg width='16px' height='24px' viewBox='0 0 12 16' version='1.1'>
-              <g id='Octicons' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
-                <g id='watch' fill='#f7f7f7'>
-                  <path d='M6,8 L8,8 L8,9 L5,9 L5,5 L6,5 L6,8 L6,8 Z M12,8 C12,10.22 10.8,12.16 9,13.19 L9,15 C9,15.55 8.55,16 8,16 L4,16 C3.45,16 3,15.55 3,15 L3,13.19 C1.2,12.16 0,10.22 0,8 C0,5.78 1.2,3.84 3,2.81 L3,1 C3,0.45 3.45,0 4,0 L8,0 C8.55,0 9,0.45 9,1 L9,2.81 C10.8,3.84 12,5.78 12,8 L12,8 Z M11,8 C11,5.23 8.77,3 6,3 C3.23,3 1,5.23 1,8 C1,10.77 3.23,13 6,13 C8.77,13 11,10.77 11,8 L11,8 Z' id='Shape' />
-                </g>
-              </g>
-            </svg>
+        <div style={{
+          width: '8px',
+          background: 'white',
+          position: 'absolute',
+          top: '0px',
+          bottom: '0px',
+          left: '-8px'
+          // borderLeft: '1px solid  rgba(0,0,0,0.2)',
+          // zIndex: '1'
+          // right: '-10px',
+          // top: '0px',
+          // bottom: '0px'
+        }} />
+        <div onClick={() => { this.setState({expand: !this.state.expand}) }} style={{
+          position: 'absolute',
+          height: '40px',
+          width: '40px',
+          borderTopLeftRadius: '20px',
+          borderBottomLeftRadius: '20px',
+          background: 'white',
+          // borderTop: '1px solid rgba(0,0,0,0.2)',
+          // borderLeft: '1px solid  rgba(0,0,0,0.2)',
+          // borderBottom: '1px solid  rgba(0,0,0,0.2)',
+          bottom: '50%',
+          left: '-48px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: '2'
+        }}>
+          <div style={{paddingLeft: '3px'}}>
+            {icons.clock({color: color.text})}
           </div>
         </div>
         <div style={{display: 'flex', position: 'absolute', background: 'rgba(255,255,255,1)', bottom: '10px', right: '10px', left: '10px', height: '40px', fontWeight: 'bold', borderRadius: '3px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', zIndex: '30'}}>
           <div onClick={() => { this.timeTravel(-1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40px', width: '40px', fontWeight: 'bold', borderRight: '1px solid rgba(0,0,0,0.1)'}}>
-            <svg width='10px' height='16px' viewBox='0 0 10 16' version='1.1'>
-              <g id='Octicons' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
-                <g id='arrow-left' fill='#5e2fed'>
-                  <polygon id='Shape' points='6 3 0 8 6 13 6 10 10 10 10 6 6 6' />
-                </g>
-              </g>
-            </svg>
+            {icons.arrow({color: color.text, direction: 'left'})}
           </div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px', textTransform: 'uppercase', height: '40px', width: 'calc(100% - 80px)'}}>{'Time Travel'}</div>
           <div onClick={() => { this.timeTravel(1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40px', width: '40px', fontWeight: 'bold', borderLeft: '1px solid rgba(0,0,0,0.1)'}}>
-            <svg width='10px' height='16px' viewBox='0 0 10 16' version='1.1'>
-              <g id='Octicons' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
-                <g id='arrow-right' fill='#5e2fed'>
-                  <polygon id='Shape' points='10 8 4 3 4 6 0 6 0 10 4 10 4 13' />
-                </g>
-              </g>
-            </svg>
+            {icons.arrow({color: color.text, direction: 'right'})}
           </div>
         </div>
       </div>

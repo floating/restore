@@ -8,13 +8,11 @@ import notify from './notify'
 import patch from './patch'
 import pathway from './pathway'
 
-const record = {}
-
 export const resolve = (internal, action, tree = {}, name) => {
   if (typeof action === 'function') {
     return (...args) => {
       let deferred = false
-      let count = record[name] = ++record[name] || 1
+      let count = internal.count[name] = ++internal.count[name] || 1
       internal.queue.actions.push({name, count, deferred, updates: []})
       if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
       let update = (...args) => {
