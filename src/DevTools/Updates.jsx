@@ -25,10 +25,9 @@ const logUpdate = (path, value) => {
   console.log(value)
   console.log(' ')
 }
-export const Updates = ({updates, color}) => {
+export const Updates = ({updates}) => {
   let style = {
-    update: {
-    },
+    update: {},
     updatePath: {
       display: 'flex',
       justifyContent: 'flex-start',
@@ -36,10 +35,9 @@ export const Updates = ({updates, color}) => {
       whitespace: 'nowrap',
       overflow: 'hidden',
       fontFamily: 'monospace',
-      padding: '0px 5px 5px 50px',
-      // background: color.b,
-      // borderBottom: `1px solid ${color.z}`,
-      fontSize: '13px'
+      padding: '0px 5px 6px 50px',
+      fontSize: '13px',
+      cursor: 'pointer'
     }
   }
   return (

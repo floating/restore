@@ -1,18 +1,20 @@
 
 import React from 'react'
-import icons from '../icons'
+import icons from './icons'
+import color from './color'
 
 import Updates from './Updates'
 
-export const Actions = ({actions, color}) => {
+// let hover = {name: '', count: -1}
+
+export const Actions = ({actions}) => {
   let style = {
-    actionWrap: {
-    },
+    wrap: {},
     action: {
       overflow: 'hidden',
       color: color.text,
       borderRadius: '3px',
-      background: color.d,
+      background: 'rgb(55, 59, 66)',
       position: 'relative'
     },
     top: {
@@ -22,8 +24,7 @@ export const Actions = ({actions, color}) => {
     },
     name: {
       padding: '5px 5px 5px 40px',
-      fontSize: '12px',
-      fontWeight: 'bold'
+      fontSize: '12px'
     },
     icon: {
       position: 'absolute',
@@ -31,18 +32,18 @@ export const Actions = ({actions, color}) => {
       top: '0',
       left: '0',
       bottom: '0',
-      background: '#505e75',
+      background: 'rgb(68, 73, 82)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
     }
   }
   return (
-    <div style={style.actionWrap}>
+    <div style={style.wrap}>
       {actions.map((action, i) => {
-        style.action.marginTop = i === 0 ? '0px' : '5px'
+        let actionStyle = i === 0 ? style.action : {...style.action, marginTop: '5px'}
         return (
-          <div key={i} style={style.action}>
+          <div key={i} style={actionStyle}>
             <div style={style.top}>
               {action.deferred ? (
                 <div style={style.icon}>{icons.clock({color: color.text})}</div>
@@ -51,7 +52,7 @@ export const Actions = ({actions, color}) => {
               )}
               <div style={style.name}>{action.name}</div>
             </div>
-            <Updates updates={action.updates} color={color} />
+            <Updates updates={action.updates} />
           </div>
         )
       })}
