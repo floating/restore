@@ -7,13 +7,19 @@ import connect from '../../connect'
 
 import icons from '../icons'
 
+import Actions from './Actions'
+import Details from './Details'
+
 const color = {
+  back: 'rgb(44, 48, 53)',
   a: '#dbe4f5',
+  // a: '#392565',
   b: 'rgb(237, 244, 255)',
-  c: '#f5f9ff',
-  d: 'white',
+  // b: '#6246a1',
+  d: 'rgb(74, 87, 109)',
+  c: 'white',
   z: 'rgb(230, 238, 253)',
-  text: 'rgb(61, 90, 144)',
+  text: 'white',
   good: '#49e6b4',
   bad: 'red'
 }
@@ -50,241 +56,13 @@ class TimeMachine extends React.Component {
     this.store.api.replaceState(this.history[this.history.length - 1].state)
     this.forceUpdate()
   }
-  actionsToName (actions) {
-    console.log(actions)
-    // return actions.map(action => action.name + (action.count ? ` (${this.ordinal(action.count + 1)} Update)` : '') + (action.deferred ? ' [deferred]' : '')).join(' > ')
-  }
   logState (state) {
     return e => {
       e.stopPropagation()
       console.log(state)
     }
   }
-  renderUpdates (updates) {
-    let style = {
-      update: {},
-      updatePath: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        whitespace: 'nowrap',
-        overflow: 'hidden',
-        fontFamily: 'monospace',
-        padding: '5px',
-        background: color.b,
-        // borderBottom: `1px solid ${color.z}`,
-        fontSize: '13px'
-      }
-    }
-    let stringLength = 14
-    const displayPath = (path) => {
-      if (path.length > stringLength) path = '...' + path.substring(path.length - stringLength, path.length)
-      return path
-    }
-    const displayValue = (value) => {
-      if (value !== undefined && value !== null) {
-        if (value.constructor === Object) {
-          value = 'Object(' + Object.keys(value).length + ')'
-        } else if (value.constructor === Array) {
-          value = 'Array(' + value.length + ')'
-        } else {
-          value = JSON.stringify(value)
-          if (value.length > stringLength) value = value.substring(0, stringLength) + '...'
-        }
-      }
-      return value
-    }
-    const logUpdate = (path, value) => {
-      console.log(' ')
-      console.log('Updated Path: ' + path)
-      console.log(value)
-      console.log(' ')
-    }
-    return (
-      <div>
-        {updates.map((update, i) => {
-          return (
-            <div key={i} style={style.update}>
-              <div style={style.updatePath} onClick={(e) => logUpdate(update.path, update.value)}>
-                <span>{displayPath(update.path)}</span>
-                <span>&nbsp;=&nbsp;</span>
-                <span style={{fontWeight: 'bold'}}>{displayValue(update.value)}</span>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    )
-  }
-  renderActions (actions) {
-    let style = {
-      action: {
-        // borderRadius: '3px',
-        overflow: 'hidden',
-        background: color.d,
-        color: color.text
-        // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)'
-        // marginBottom: '10px'
-      },
-      actionName: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontWeight: 'bold',
-        brderBottom: `1px solid ${color.z}`,
-        justifyContent: 'space-between',
-        padding: '5px'
-        // background: 'rgba(255,255,255,1)'
-      }
-    }
-    return (
-      <div>
-        {actions.map((action, i) => {
-          return (
-            <div key={i} style={style.action}>
-              <div style={style.actionName}>
-                <div>{action.name}</div>
-                {action.deferred ? <div>{icons.cycle({color: color.text})}</div> : null}
-              </div>
-              {this.renderUpdates(action.updates)}
-            </div>
-          )
-        })}
-      </div>
-    )
-  }
-  renderDetails (batch) {
-    let style = {
-      details: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // padding: 'px',
-        fontSize: '10px',
-        fontWeight: 'bold',
-        // height: '40px',
-        background: color.c,
-        color: color.text,
-        // fontWeight: 'bold',
-        textTransform: 'uppercase'
-      },
-      detail: {
-        flexGrow: 1,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        padding: '5px 0px 7px 0px'
-      },
-      display: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: '3px'
-      },
-      icon: {
-        padding: '6px'
-      },
-      count: {
-        fontSize: '23px'
-      },
-      text: {
-        padding: '0px 0px 4px 4px'
-      }
-    }
-    let actionCount = batch.actions.length
-    let updateCount = 0
-    batch.actions.forEach(action => { updateCount += action.updates.length })
-    let observerCount = batch.obs
-    return (
-      <div style={style.details}>
-        <div style={style.detail}>
-          <div style={style.display}>
-            <div style={style.icon}>{icons.radio({color: color.text})}</div>
-            <div style={style.count}>{actionCount}</div>
-          </div>
-          <div style={style.text}>{actionCount === 1 ? 'action' : 'actions'}</div>
-        </div>
-        <div style={style.detail}>
-          <div style={style.display}>
-            <div style={style.icon}>{icons.merge({color: color.text})}</div>
-            <div style={style.count}>{updateCount}</div>
-          </div>
-          <div style={style.text}>{updateCount === 1 ? 'update' : 'updates'}</div>
-        </div>
-        <div style={style.detail}>
-          <div style={style.display}>
-            <div style={style.icon}>{icons.telescope({color: color.text})}</div>
-            <div style={style.count}>{observerCount}</div>
-          </div>
-          <div style={style.text}>{observerCount === 1 ? 'observer' : 'observers'}</div>
-        </div>
-      </div>
-    )
-  }
-  renderPoint (batch, index, back) {
-    let style = {
-      bot: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        cursor: 'pointer',
-        zIndex: '20',
-        whiteSpace: 'nowrap',
-        background: color.z,
-        height: '40px',
-        color: color.text,
-        margin: '10px 0px',
-        borderRadius: '25px'
-      },
-      button: {
-        // background: 'rgba(255,255,255,0.8)',
-        // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
-        padding: '0px 20px',
-        height: '100%',
-        //width: '100px',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // border: '1px solid rgba(0,0,0,0.1)',
-        margin: '10px 0px',
-        borderRadius: '20px'
-        // ,
-        // background: color.z
-      },
-      here: {
-        // background: '#5e2fed',
-        // boxShadow: '0px 0px 1px rgba(75,0,150,0.4)',
-        // padding: '7px',
-        // borderRadius: '3px',
-        // fontSize: '12px',
-        // fontWeight: 'bold',
-        // borderRight: `1px solid ${color.a}`,
-        background: color.good
 
-        // background: 'linear-gradient(45deg, rgba(168, 113, 255, 0.2) 0%, rgba(168, 113, 255, 0) 100%)'
-      }
-    }
-    const onClick = () => {
-      if (back) {
-        this.timeTravel(index - this.history.length + 1)
-      } else {
-        this.timeTravel(index + 1)
-      }
-    }
-    return (
-      <div style={style.bot}>
-        {index === this.history.length - 1 && back ? (
-          <div style={{...style.button, ...style.here}}>{'Current'}</div>
-        ) : (
-          <div style={{...style.button}} onClick={onClick}>{'Travel Here'}</div>
-        )}
-        <div style={{...style.button}} onClick={this.logState(batch.state)}>{'Log State'}</div>
-      </div>
-    )
-  }
   renderTimeline () {
     let style = {
       timeline: {
@@ -300,6 +78,12 @@ class TimeMachine extends React.Component {
         // background: '#38344a'
       },
       item: {
+        borderRadius: '5px',
+        overflow: 'hidden',
+        background: 'rgb(57, 65, 78)',
+        marginBottom: '10px',
+        padding: '0px 5px 0px 5px',
+        position: 'relative'
       },
       current: {
         position: 'absolute',
@@ -312,15 +96,60 @@ class TimeMachine extends React.Component {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+      },
+      marker: {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        bottom: '0',
+        width: '30px',
+        background: '#3d4552'
+      },
+      current: {
+        background: color.good
+      },
+      body: {
+        marginLeft: '30px'
+      },
+      top: {
+        height: '30px'
+      },
+      mid: {
+
+      },
+      bot: {
+        height: '30px',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+      },
+      log : {
+        textTransform: 'uppercase',
+        fontSize: '10px',
+        paddingRight: '5px',
+        paddingTop: '0px'
       }
     }
 
-    let item = (batch, i, back) => {
+    let item = (batch, i, future) => {
+      // {i === 0 && !future ? null : <Actions actions={batch.actions} color={color} />}
+      // {i === 0 && !future ? null : <Details batch={batch} color={color} index={i} future={future} history={this.history} />}
+      let marker = i === this.history.length - 1 && !future ? {...style.marker, ...style.current} : style.marker
+
       return (
         <div key={i} style={style.item}>
-          {i === 0 && back ? null : this.renderActions(batch.actions)}
-          {i === 0 && back ? null : this.renderDetails(batch)}
-          {this.renderPoint(batch, i, back)}
+          <div style={marker}></div>
+          <div style={style.body}>
+            <div style={style.top}>
+              <Details batch={batch} color={color} index={i} future={future} history={this.history} />
+            </div>
+            <div style={style.mid}>
+              <Actions actions={batch.actions} color={color} />
+            </div>
+            <div style={style.bot}>
+              <div style={style.log} onClick={() => console.log(batch.state)}>Log State</div>
+            </div>
+          </div>
         </div>
       )
     }
@@ -342,7 +171,7 @@ class TimeMachine extends React.Component {
           //borderTopLeftRadius: '5px',
           //borderTopRightRadius: '5px',
           height: '150px'
-          //borderBottom: `1px solid ${color.a}`,
+          //borderBottom: `1px solid ${color.back}`,
           //boxShadow: '0px 0px 4px rgba(200,0,200,0.7)'
           // background: color.z
           }}>
@@ -350,8 +179,8 @@ class TimeMachine extends React.Component {
           header
 
         </div>
-        {this.history.map((batch, i) => item(batch, i, true))}
-        {this.future.map((batch, i) => item(batch, i, false))}
+        {this.history.map((batch, i) => item(batch, i, false))}
+        {this.future.map((batch, i) => item(batch, i, true))}
         <div style={{width: '100%', height: '50px'}} />
       </div>
     )
@@ -365,13 +194,14 @@ class TimeMachine extends React.Component {
         top: '0px',
         right: this.state.expand ? '0px' : '-353px',
         bottom: '0px',
-        background: color.a,
+        background: color.back,
         fontSize: '14px',
         fontFamily: 'sans-serif',
         transition: '0.4s all cubic-bezier(0.85, 0, 0.15, 1)',
         color: color.text,
         // boxShadow: 'inset 0px 1px 3px rgba(0,0,150,0.3)',
         zIndex: '99999999'
+        //background: 'linear-gradient(10deg, rgb(68, 63, 93) 0%, #4f6c98 100%)'
       },
       clock: {
         height: '36px',
@@ -387,12 +217,12 @@ class TimeMachine extends React.Component {
       <div style={style.timeMachine}>
         {this.renderTimeline()}
         <div style={{
-          width: '8px',
+          width: '5px',
           background: 'white',
           position: 'absolute',
           top: '0px',
           bottom: '0px',
-          left: '-8px'
+          left: '-5px'
           // borderLeft: '1px solid  rgba(0,0,0,0.2)',
           // zIndex: '1'
           // right: '-10px',
@@ -410,15 +240,13 @@ class TimeMachine extends React.Component {
           // borderLeft: '1px solid  rgba(0,0,0,0.2)',
           // borderBottom: '1px solid  rgba(0,0,0,0.2)',
           bottom: '50%',
-          left: '-48px',
+          left: '-45px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: '2'
         }}>
-          <div style={{paddingLeft: '3px'}}>
-            {icons.clock({color: color.text})}
-          </div>
+          <div style={{paddingLeft: '3px'}}>{icons.beaker({color: color.text})}</div>
         </div>
         <div style={{display: 'flex', position: 'absolute', background: 'rgba(255,255,255,1)', bottom: '10px', right: '10px', left: '10px', height: '40px', fontWeight: 'bold', borderRadius: '3px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', zIndex: '30'}}>
           <div onClick={() => { this.timeTravel(-1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40px', width: '40px', fontWeight: 'bold', borderRight: '1px solid rgba(0,0,0,0.1)'}}>
