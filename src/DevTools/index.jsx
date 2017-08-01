@@ -34,8 +34,8 @@ class DevTools extends React.Component {
       if (actions.length > 0) {
         this.history.push({state, actions, obs})
         this.future = []
-        if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
         this.forceUpdate()
+        if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
       }
     })
   }
