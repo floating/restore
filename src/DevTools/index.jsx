@@ -228,10 +228,10 @@ class DevTools extends React.Component {
         {this.renderTimeline()}
         <div onClick={() => { this.setState({expand: !this.state.expand}) }} style={{
           position: 'absolute',
-          height: '44px',
-          width: '44px',
-          borderRadius: '22px',
-          background: 'white',
+          height: '40px',
+          width: '40px',
+          borderRadius: '20px',
+          background: color.levelFour,
           cursor: 'pointer',
           bottom: '50%',
           left: '-52px',
@@ -244,14 +244,15 @@ class DevTools extends React.Component {
             height: '38px',
             width: '38px',
             borderRadius: '19px',
-            background: color.back,
+            background: color.highlight,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             boxSizing: 'border-box',
-            padding: '0px 0px 2px 2px'
+            padding: '0px 0px 2px 2px',
+            fill: color.levelTwo
           }}>
-            {icons.beaker({color: 'white'})}
+            {icons.beaker()}
           </div>
         </div>
         <div style={{display: 'flex', position: 'absolute', color: color.text, fill: color.text, background: color.levelThree, bottom: '5px', right: '5px', left: '5px', height: '30px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', zIndex: '30'}}>
@@ -262,18 +263,18 @@ class DevTools extends React.Component {
             {icons.arrow({direction: 'right'})}
           </div>
           <div style={{
-              textTransform: 'uppercase',
-              width: '100%',
-              fontSize: '8px',
-              letterSpacing: '5px',
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              color: 'rgba(0,0,0,0.9)',
-              userSelect: 'none',
-              margin: '4px 0px 2px 2px',
-              lineHeight: '11px'
-            }}>
+            textTransform: 'uppercase',
+            width: '100%',
+            fontSize: '8px',
+            letterSpacing: '5px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            color: 'rgba(0,0,0,0.9)',
+            userSelect: 'none',
+            margin: '4px 0px 2px 2px',
+            lineHeight: '11px'
+          }}>
             Restore<br />DevTool
           </div>
         </div>
