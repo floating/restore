@@ -1,5 +1,6 @@
 
 import React from 'react'
+import icons from '../../icons'
 
 const stringLength = 14
 const displayPath = (path) => {
@@ -34,11 +35,17 @@ export const Updates = ({updates}) => {
       alignItems: 'center',
       whitespace: 'nowrap',
       overflow: 'hidden',
-      fontFamily: 'monospace',
-      padding: '0px 5px 6px 50px',
-      fontSize: '13px',
+      fontFamily: 'fira, monospace',
+      padding: '0px 5px 6px 45px',
+      fontSize: '10px',
       cursor: 'pointer'
+    },
+    icon: {
+      marginRight: '7px',
+      height: '8px',
+      marginTop: '-4px'
     }
+
   }
   return (
     <div>
@@ -46,8 +53,9 @@ export const Updates = ({updates}) => {
         return (
           <div key={i} style={style.update}>
             <div style={style.updatePath} onClick={(e) => logUpdate(update.path, update.value)}>
+              <span style={style.icon}>{icons.mergeSmall()}</span>
               <span>{displayPath(update.path)}</span>
-              <span>&nbsp;=&nbsp;</span>
+              <span>&nbsp;===&nbsp;</span>
               <span style={{fontWeight: 'bold'}}>{displayValue(update.value)}</span>
             </div>
           </div>

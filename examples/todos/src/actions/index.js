@@ -1,23 +1,23 @@
 let nextTodoId = 0
 
 export const addTodo = (update, text) => {
-  // update('todos', todos => {
-  //   let todo = {id: nextTodoId++, text, completed: false}
-  //   todos.push(todo)
-  //   return todos
-  // })
-  // update('todos', todos => {
-  //   let todo = {id: nextTodoId++, text, completed: false}
-  //   todos.push(todo)
-  //   return todos
-  // })
+  update('todos', todos => {
+    let todo = {id: nextTodoId++, text, completed: false}
+    todos.push(todo)
+    return todos
+  })
+  update('todos', todos => {
+    let todo = {id: nextTodoId++, text, completed: false}
+    todos.push(todo)
+    return todos
+  })
   setTimeout(() => {
     update('todos', todos => {
       let todo = {id: nextTodoId++, text, completed: false}
       todos.push(todo)
       return todos
     })
-  }, 3000 * Math.random())
+  }, 10000 * Math.random())
 }
 
 export const toggleTodo = (update, id) => {

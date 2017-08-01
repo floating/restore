@@ -1,5 +1,5 @@
 /*
-  Time Machine Component
+  DevTools Component
 */
 
 import React from 'react'
@@ -11,12 +11,17 @@ import color from './color'
 import Actions from './Actions'
 import Details from './Details'
 
+import fira from './fira'
+
 class DevTools extends React.Component {
   constructor (...args) {
     super(...args)
     this.history = [{state: this.context.store(), obs: 0, actions: [{name: 'initialState', count: 0, updates: []}]}]
     this.future = []
-    this.state = {expand: true}
+    this.state = {expand: true, name: '', count: 0}
+  }
+  setLink = (name, count) => {
+    this.setState({name, count})
   }
   ordinal (n) {
     let s = ['th', 'st', 'nd', 'rd']
@@ -34,6 +39,17 @@ class DevTools extends React.Component {
       }
     })
   }
+  componentDidMount () {
+    let fontCode = `@font-face {font-family: 'fira'; src: url('data:application/font-woff;base64,${fira}') format('woff'); font-style: normal; font-weight: normal}`
+    let style = document.createElement('style')
+    style.type = 'text/css'
+    if (style.styleSheet) {
+      style.styleSheet.cssText = fontCode
+    } else {
+      style.innerHTML = fontCode
+    }
+    document.head.appendChild(style)
+  }
   timeTravel (travel) {
     if (travel > 0) {
       this.history = [...this.history, ...this.future.splice(0, travel)]
@@ -49,7 +65,6 @@ class DevTools extends React.Component {
       console.log(state)
     }
   }
-
   renderTimeline () {
     let style = {
       timeline: {
@@ -60,17 +75,18 @@ class DevTools extends React.Component {
         bottom: '30px',
         fontSize: '14px',
         overflow: 'scroll',
-        padding: '0px 10px 0px 10px'
+        padding: '5px 5px 0px 5px'
         // background: '#38344a'
       },
       item: {
-        borderRadius: '3px',
+        // borderRadius: '3px',
         overflow: 'hidden',
-        background: 'rgb(48, 52, 58)',
-        marginBottom: '10px',
+        background: color.levelTwo,
+        marginBottom: '5px',
         padding: '0px 5px 0px 5px',
         position: 'relative',
-        boxShadow: '0px 1px 3px rgba(0,0,0,0.1)'
+        fill: color.text
+        // boxShadow: '0px 1px 3px rgba(0,0,0,0.1)'
       },
       marker: {
         position: 'absolute',
@@ -78,14 +94,14 @@ class DevTools extends React.Component {
         left: '0',
         bottom: '0',
         width: '30px',
-        background: 'rgb(55, 59, 66)',
+        background: color.levelThree,
         zIndex: 0,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end'
       },
       current: {
-        background: color.good
+        background: color.highlight
       },
       body: {
         marginLeft: '10px',
@@ -122,7 +138,9 @@ class DevTools extends React.Component {
         alignItems: 'center',
         zIndex: 3,
         cursor: 'pointer',
-        color: 'rgb(57, 65, 78)'
+        color: color.text,
+        paddingTop: '3px',
+        boxSizing: 'border-box'
       }
     }
 
@@ -130,12 +148,12 @@ class DevTools extends React.Component {
       let current = i === this.history.length - 1 && !future
       let travel = () => future ? this.timeTravel(i + 1) : this.timeTravel(i - this.history.length + 1)
       let marker = current ? {...style.marker, ...style.current} : style.marker
-      let markerIcon = current ? style.markerIcon : {...style.markerIcon, color: 'white'}
+      let markerIcon = current ? {...style.markerIcon, color: color.levelThree, fill: color.levelThree} : style.markerIcon
       return (
         <div key={i} style={style.item}>
           <div style={marker} />
           <div style={markerIcon} onClick={travel}>
-            <span style={{pointerEvents: 'none'}}>{icons.location({color: markerIcon.color})}</span>
+            <span style={{pointerEvents: 'none'}}>{icons.location()}</span>
           </div>
           <div style={style.body}>
             {i > 0 || future ? (
@@ -145,7 +163,7 @@ class DevTools extends React.Component {
             ) : null}
             {i > 0 || future ? (
               <div style={style.mid}>
-                <Actions actions={batch.actions} />
+                <Actions actions={batch.actions} name={this.state.name} count={this.state.count} setLink={this.setLink} />
               </div>
             ) : null}
             <div style={style.bot}>
@@ -155,23 +173,33 @@ class DevTools extends React.Component {
         </div>
       )
     }
+    /*
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      borderRadius: '3px',
+      height: '50px',
+      textTransform: 'uppercase',
+      letterSpacing: '12px',
+      fontSize: '10px',
+      color: 'black'
+    }}>
+      <div>Restore DevTools</div>
+    </div>
+
+    <div style={{
+      width: '3px',
+      background: 'white',
+      position: 'absolute',
+      top: '0px',
+      bottom: '0px',
+      left: '-3px'
+    }} />
+    */
     return (
       <div ref={(scroll) => { if (scroll) this.scroll = scroll }} style={style.timeline}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          borderRadius: '3px',
-          height: '70px',
-          textTransform: 'uppercase',
-          letterSpacing: '12px',
-          fontSize: '10px',
-          color: 'black'
-        }}>
-          <div style={{marginBottom: '6px'}}>Restore</div>
-          <div>DevTool</div>
-        </div>
         {this.history.map((batch, i) => item(batch, i, false))}
         {this.future.map((batch, i) => item(batch, i, true))}
         <div style={{width: '100%', height: '50px'}} />
@@ -186,7 +214,7 @@ class DevTools extends React.Component {
         top: '0px',
         right: this.state.expand ? '0px' : '-344px',
         bottom: '0px',
-        background: color.back,
+        background: color.levelOne,
         fontSize: '14px',
         fontFamily: 'Helvetica, Arial, sans-serif',
         transition: '0.4s all cubic-bezier(0.85, 0, 0.15, 1)',
@@ -198,14 +226,6 @@ class DevTools extends React.Component {
     return (
       <div style={style.timeMachine}>
         {this.renderTimeline()}
-        <div style={{
-          width: '3px',
-          background: 'white',
-          position: 'absolute',
-          top: '0px',
-          bottom: '0px',
-          left: '-3px'
-        }} />
         <div onClick={() => { this.setState({expand: !this.state.expand}) }} style={{
           position: 'absolute',
           height: '44px',
@@ -234,13 +254,27 @@ class DevTools extends React.Component {
             {icons.beaker({color: 'white'})}
           </div>
         </div>
-        <div style={{display: 'flex', position: 'absolute', background: 'rgba(255,255,255,1)', bottom: '10px', right: '10px', left: '10px', height: '40px', borderRadius: '3px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', zIndex: '30'}}>
-          <div onClick={() => { this.timeTravel(-1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40px', width: '40px', borderRight: '1px solid rgba(0,0,0,0.1)'}}>
-            {icons.arrow({color: color.text, direction: 'left'})}
+        <div style={{display: 'flex', position: 'absolute', color: color.text, fill: color.text, background: color.levelThree, bottom: '5px', right: '5px', left: '5px', height: '30px', boxShadow: '0px 1px 3px rgba(0,0,150,0.3)', zIndex: '30'}}>
+          <div onClick={() => { this.timeTravel(-1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30px', width: '30px', minWidth: '30px', background: color.levelFour, cursor: 'pointer'}}>
+            {icons.arrow({direction: 'left'})}
           </div>
-          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px', textTransform: 'uppercase', height: '40px', width: 'calc(100% - 80px)'}}>{'Time Travel'}</div>
-          <div onClick={() => { this.timeTravel(1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40px', width: '40px', borderLeft: '1px solid rgba(0,0,0,0.1)'}}>
-            {icons.arrow({color: color.text, direction: 'right'})}
+          <div onClick={() => { this.timeTravel(1) }} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '1px', height: '30px', width: '30px', minWidth: '30px', background: color.levelFour, cursor: 'pointer'}}>
+            {icons.arrow({direction: 'right'})}
+          </div>
+          <div style={{
+              textTransform: 'uppercase',
+              width: '100%',
+              fontSize: '8px',
+              letterSpacing: '5px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              color: 'rgba(0,0,0,0.9)',
+              userSelect: 'none',
+              margin: '4px 0px 2px 2px',
+              lineHeight: '11px'
+            }}>
+            Restore<br />DevTool
           </div>
         </div>
       </div>
