@@ -2,14 +2,10 @@ import React from 'react'
 
 import icons from '../shared/icons'
 import color from '../shared/color'
-import loadStyle from '../shared/loadStyle'
 
-import style from './style'
+import './style'
 
 class Details extends React.PureComponent {
-  componentDidMount () {
-    loadStyle(style)
-  }
   render () {
     let actionCount = (this.props.batch.actions.filter(a => !a.deferred)).length
     let updateCount = 0

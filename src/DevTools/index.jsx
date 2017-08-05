@@ -6,12 +6,11 @@ import React from 'react'
 import connect from '../connect'
 
 import icons from './shared/icons'
-import loadStyle from './shared/loadStyle'
-
-import style from './style'
 
 import Actions from './Actions'
 import Details from './Details'
+
+import './style'
 
 class DevTools extends React.Component {
   constructor (...args) {
@@ -38,9 +37,6 @@ class DevTools extends React.Component {
         if (this.scroll) this.scroll.scrollTop = this.scroll.scrollHeight
       }
     })
-  }
-  componentDidMount () {
-    loadStyle(style)
   }
   timeTravel (travel) {
     if (travel > 0) {

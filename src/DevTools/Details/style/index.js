@@ -1,3 +1,4 @@
+import loadStyle from '../../shared/loadStyle'
 import color from '../../shared/color'
 
 export const style = `
@@ -26,4 +27,4 @@ export const style = `
   }
 `
 
-export default style
+loadStyle(style)

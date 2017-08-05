@@ -1,9 +1,8 @@
 import React from 'react'
 
 import icons from '../../shared/icons'
-import loadStyle from '../../shared/loadStyle'
 
-import style from './style'
+import './style'
 
 const stringLength = 14
 
@@ -34,9 +33,6 @@ const logUpdate = (path, value) => {
 }
 
 class Updates extends React.PureComponent {
-  componentDidMount () {
-    loadStyle(style)
-  }
   render () {
     let {updates} = this.props
     return (

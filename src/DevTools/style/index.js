@@ -1,3 +1,4 @@
+import loadStyle from '../shared/loadStyle'
 import color from '../shared/color'
 import fira from './fira'
 import open from './open'
@@ -206,4 +207,4 @@ export const style = `
   }
 `
 
-export default style
+loadStyle(style)

@@ -2,15 +2,12 @@ import React from 'react'
 
 import icons from '../shared/icons'
 import color from '../shared/color'
-import loadStyle from '../shared/loadStyle'
 
-import style from './style'
 import Updates from './Updates'
 
+import './style'
+
 class Actions extends React.PureComponent {
-  componentDidMount () {
-    loadStyle(style)
-  }
   render () {
     let {actions, name, count, setLink} = this.props
     return (

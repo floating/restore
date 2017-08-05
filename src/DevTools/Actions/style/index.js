@@ -1,3 +1,4 @@
+import loadStyle from '../../shared/loadStyle'
 import color from '../../shared/color'
 
 export const style = `
@@ -22,7 +23,7 @@ export const style = `
 
   .__restoreActionName {
     padding: 5px 0px 5px 35px;
-    font-size: 12px;
+    font-size: 13px;
     font-family: _reFira, monospace;
     pointer-events: none;
   }
@@ -42,4 +43,4 @@ export const style = `
   }
 `
 
-export default style
+loadStyle(style)

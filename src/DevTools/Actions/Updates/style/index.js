@@ -1,3 +1,5 @@
+import loadStyle from '../../../shared/loadStyle'
+
 export const style = `
   .__restoreUpdatePath {
     display: flex;
@@ -5,17 +7,17 @@ export const style = `
     align-items: center;
     whitespace: nowrap;
     overflow: hidden;
-    font-family: fira, monospace;
+    font-family: _reFira, monospace;
     padding: 0px 5px 6px 45px;
-    font-size: 10px;
+    font-size: 11px;
     cursor: pointer;
   }
 
   .__restoreUpdateIcon {
     margin-right: 7px;
-    height: 8px;
+    height: 10px;
     margin-top: -4px;
   }
 `
 
-export default style
+loadStyle(style)
