@@ -1,12 +1,14 @@
 # Restore
 
-*A __predictable__ and __observable__ state container for React apps*
+*A __predictable__, __observable__, __immutable__ state container for React apps*
 
-Restore helps you write predictable apps that are easy to test and debug. It uses observable values to automatically keep your components in sync without unnecessary renders.
+- __Predictable__ - Unidirectional data flow makes easy to test, debug, and reason about your application
+- __Observable__ - Observablable state automatically keeps your components in sync without unnecessary renders
+- __Immutable__ - Frozen state prevents mutations using targeted thaw and replace updates
+- __DevTools__ - Helpful DevTools, including time travel can be easily dropped into your applicaion `<Restore.DevTools />` and give lots of visibility into your state, actions, updates and observers
 
-Restore comes with some helpful dev tools, including a time travel debugger.
 
-![Restore Dev Tools](https://media.giphy.com/media/3o7bukRSLYJyR9jdXG/giphy.gif)
+![Restore DevTools](http://i.imgur.com/eZZTPqU.gif)
 
 ## Install
 
@@ -197,9 +199,9 @@ ReactDOM.render(<Root />, document.getElementById('root'))
 
 ```
 
-## Enabling Dev Tools / Time Travel
+## Enabling DevTools / Time Travel
 
-Restore ships with a dev tools component (`<Restore.Dev />`) that you can drop anywhere in your application to enable the dev tools.
+Restore ships with a dev tools component (`<Restore.DevTools />`) that you can drop anywhere in your application to enable the dev tools.
 
 ## Standalone Observers
 
