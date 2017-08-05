@@ -9,4 +9,5 @@ export const style = css => {
   }
   head.appendChild(style)
 }
+
 export default style

@@ -1,12 +1,4 @@
-
 export const color = {
-  back: 'pink',
-  a: 'pink',
-  b: 'pink',
-  d: 'pink',
-  c: 'pink',
-  z: 'pink',
-  bad: 'red',
   text: '#f1f2f9',
   highlight: '#f1f2f9',
   sync: 'rgb(141, 255, 244)',

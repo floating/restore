@@ -1,81 +1,44 @@
-
 import React from 'react'
-import icons from '../icons'
-import color from '../color'
-import style from '../style'
 
+import icons from '../shared/icons'
+import color from '../shared/color'
+import loadStyle from '../shared/loadStyle'
+
+import style from './style'
 import Updates from './Updates'
 
-style(`
-  .__restoreAction {
-    overflow: hidden;
-    color: ${color.tex};
-    background: ${color.levelThree};
-    position: relative;
+class Actions extends React.PureComponent {
+  componentDidMount () {
+    loadStyle(style)
   }
-`)
-export const Actions = ({actions, name, count, setLink}) => {
-  let style = {
-    actionStyle: {
-      overflow: 'hidden',
-      color: color.text,
-      background: color.levelThree,
-      position: 'relative'
-    },
-    top: {
-      display: 'flex',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      pointerEvents: 'none'
-    },
-    name: {
-      padding: '5px 0px 5px 35px',
-      fontSize: '12px',
-      fontFamily: 'fira, monospace',
-      pointerEvents: 'none'
-    },
-    icon: {
-      position: 'absolute',
-      width: '30px',
-      top: '0',
-      left: '0',
-      bottom: '0',
-      background: color.levelFour,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      fill: color.text,
-      pointerEvents: 'none'
-    }
-  }
-  return (
-    <div style={style.wrap}>
-      {actions.map((action, i) => {
-        let highlight = name === action.name && count === action.count
-        let actionStyle = i === 0 ? style.action : {...style.action, marginTop: '1px'}
-        actionStyle = highlight ? {...actionStyle, background: color.levelFour} : actionStyle
-        let iconStyle = style.icon
-        if (action.deferred) {
-          iconStyle = highlight ? {...iconStyle, background: color.async, fill: color.levelTwo} : {...iconStyle, fill: color.async}
-        } else {
-          iconStyle = highlight ? {...iconStyle, background: color.sync, fill: color.levelTwo} : {...iconStyle, fill: color.sync}
-        }
-        return (
-          <div key={i} style={actionStyle} className='__restoreAction' onMouseEnter={() => setLink(action.name, action.count)} onMouseLeave={() => setLink()}>
-            <div style={style.top}>
-              {action.deferred ? (
-                <div style={iconStyle}>{icons.clock()}</div>
-              ) : (
-                <div style={iconStyle}>{icons.zap()}</div>
-              )}
-              <div style={style.name}>{action.name}</div>
+  render () {
+    let {actions, name, count, setLink} = this.props
+    return (
+      <div>
+        {actions.map((action, i) => {
+          let highlight = name === action.name && count === action.count
+          let iconStyle = action.deferred ? (
+            highlight ? {background: color.async, fill: color.levelTwo} : {fill: color.async}
+          ) : (
+            highlight ? {background: color.sync, fill: color.levelTwo} : {fill: color.sync}
+          )
+          return (
+            <div className='__restoreAction' key={i} style={highlight ? {background: color.levelFour} : {}} onMouseEnter={() => setLink(action.name, action.count)} onMouseLeave={() => setLink()}>
+              <div className='__restoreActionTop'>
+                {action.deferred ? (
+                  <div className='__restoreActionIcon' style={iconStyle}>{icons.clock()}</div>
+                ) : (
+                  <div className='__restoreActionIcon' style={iconStyle}>{icons.zap()}</div>
+                )}
+                <div className='__restoreActionName'>{action.name}</div>
+              </div>
+              <Updates updates={action.updates} />
             </div>
-            <Updates updates={action.updates} />
-          </div>
-        )
-      })}
-    </div>
-  )
+          )
+        })}
+      </div>
+    )
+  }
 }
 
 export default Actions
