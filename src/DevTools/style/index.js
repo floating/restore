@@ -195,7 +195,7 @@ export const style = `
   .__restoreMenuText {
     text-transform: uppercase;
     width: 100%;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 5px;
     display: flex;
     justify-content: flex-end;

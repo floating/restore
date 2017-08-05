@@ -91,7 +91,6 @@ class DevTools extends React.Component {
         <div className='__restoreDevToolsMenu'>
           <div className='__restoreMenuBack' onClick={() => { this.timeTravel(-1) }}>{icons.arrow({direction: 'left'})}</div>
           <div className='__restoreMenuForward' onClick={() => { this.timeTravel(1) }}>{icons.arrow({direction: 'right'})}</div>
-          <div className='__restoreMenuText'>Restore<br />DevTool</div>
         </div>
       </div>
     )
