@@ -6,7 +6,7 @@ Restore helps you write predictable apps that are easy to test and debug. It use
 
 Restore comes with some helpful dev tools, including a time travel debugger.
 
-![Restore Dev Tools](https://media.giphy.com/media/3o7bukRSLYJyR9jdXG/giphy.gif)
+![Restore DevTools](http://i.imgur.com/eZZTPqU.gif)
 
 ## Install
 
