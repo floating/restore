@@ -421,3 +421,15 @@ test('Read-only safeguard', done => {
   })
   store.updateV()
 })
+
+test('Multi-arg paths', done => {
+  let actions = {updateV: (update) => update('z', 'y.x', 'v', v => v + 1)}
+  const store = Restore.create({a: {b: 0, c: {d: 0}}, z: {y: {x: {v: 0}}}}, actions)
+  store.observer(() => {
+    let $ = 'b'
+    expect(store('a', $)).toBe(0)
+    expect(store('a.c', 'd')).toBe(0)
+    if (store('z', 'y', 'x', 'v') === 1) done()
+  })
+  store.updateV()
+})

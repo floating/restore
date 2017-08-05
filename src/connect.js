@@ -56,4 +56,5 @@ export const connect = (Component, store) => {
   Connected._restoreOrigin = Component
   return Connected
 }
+
 export default connect

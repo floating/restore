@@ -2,57 +2,44 @@
   Resolves actions passed during create
 */
 
-import notify from './notify'
-import clone from './clone'
+import thaw from './thaw'
 import get from './get'
+import notify from './notify'
 import patch from './patch'
-import freeze from './freeze'
+import pathway from './pathway'
 
 export const resolve = (internal, action, tree = {}, name) => {
   if (typeof action === 'function') {
     return (...args) => {
-      let count = 0
       let deferred = false
-      let update = (path = false, up) => {
-        if (typeof path === 'function') {
-          up = path
-          path = false
-        }
-        internal.queue[deferred ? 'deferred' : 'normal'].push({update: up, path, details: {name, count: count++, deferred}})
-        if (!internal.queued) {
-          setTimeout(() => {
-            deferred = true
-            internal.queued = false
-            let actions = []
-            let paths = []
-            internal.queue.normal.concat(internal.queue.deferred).forEach(action => {
-              actions.push(action.details)
-              if (action.path) {
-                paths.push(action.path)
-                let part = get(internal.state, action.path)
-                internal.state = patch(internal.state, action.path, action.update(clone.deep(part), internal.state))
-              } else {
-                paths.push('*')
-                internal.state = freeze.deep(action.update(clone.deep(internal.state), internal.state))
-              }
-            })
-            internal.queue = {normal: [], deferred: []}
-            notify(internal, paths)
-            Object.keys(internal.watchers).forEach(id => internal.watchers[id](internal.state, actions)) // Notify all watchers
-          }, 0)
-          internal.queued = true
+      let count = internal.count[name] = ++internal.count[name] || 1
+      internal.queue.actions.push({name, count, deferred, updates: []})
+      if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
+      let update = (...args) => {
+        args = [...args]
+        let up = args.pop()
+        let path = pathway(args) || '*'
+        let value = up(thaw.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
+        internal.state = patch(internal.state, path, value)
+        internal.queue.paths.push(path)
+        let last = internal.queue.actions[internal.queue.actions.length - 1]
+        if (last && last.name === name && last.count === count) {
+          last.updates.push({path, value})
         } else {
-          setTimeout(() => { deferred = true }, 0)
+          internal.queue.actions.push({name, count, deferred, updates: [{path, value}]})
+          if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
         }
       }
       action(update, ...args)
+      setTimeout(() => { deferred = true }, 0)
       return internal.store
     }
   } else if (typeof action === 'object') {
-    Object.keys(action).forEach(name => { tree[name] = resolve(internal, action[name], tree[name], name) })
+    Object.keys(action).forEach(key => { tree[key] = resolve(internal, action[key], tree[key], name ? `${name}.${key}` : key) })
   } else {
     throw new Error(`[Restore] Invlaid entry in action tree: '${name}' is a ${typeof action}.`)
   }
   return tree
 }
+
 export default resolve
