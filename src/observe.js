@@ -1,5 +1,5 @@
 /*
-  Observer Tracking
+  Observer tracking
 */
 
 const observe = (internal, id, run) => {
