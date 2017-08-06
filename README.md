@@ -2,10 +2,10 @@
 
 *A __simple__ state container for React apps*
 
-- __Predictable__ - Unidirectional data flow makes it easy to test, debug and reason about your application.
-- __Observable__ - Observable state keeps your components in sync automatically, eliminating unnecessary renders.
-- __Immutable__ - Frozen state and thaw/replace updates provide baked in immutability.
-- __DevTools__ - Helpful DevTools, including time travel, provide clear visibility of your state, actions, updates and observers.
+- __Predictable__ - Unidirectional data flow makes it easy to test, debug and reason about your application
+- __Observable__ - Observable state keeps your components in sync automatically, eliminating unnecessary renders
+- __Immutable__ - Frozen state and thaw/replace updates provide baked in immutability
+- __DevTools__ - Helpful DevTools, including time travel, provide clear visibility of your state/actions/updates/observers
 
 ![Restore DevTools](http://i.imgur.com/eZZTPqU.gif)
 
