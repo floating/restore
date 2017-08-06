@@ -8,7 +8,7 @@
 - __Immutable__ - Frozen state along with thaw/replace updates provide baked in immutability
 - __DevTools__ - Helpful tools, including time travel, provide clear visibility of your state, actions, updates & observers
 
-![Restore DevTools](http://i.imgur.com/eZZTPqU.gif)
+![Restore DevTools](http://i.imgur.com/cQ7IjCr.gif)
 
 ## Install
 
