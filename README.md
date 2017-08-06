@@ -130,13 +130,10 @@ Restore.connect(Component) // Component inherits store from parent Component
 
 To access the `store` from within a connected component, we do the same as before but this time referencing `this.store`
 ```javascript 
-
 this.store('text')
-
-// or
-
+```
+```javascript 
 this.store.setText('Updated World')
-
 ```
 
 ## Enabling DevTools / Time Travel
