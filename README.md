@@ -2,12 +2,11 @@
 
 *A __simple__ state container for React apps*
 
-- __Simple__ - Reduced boilerplate, clean interface, refined patterns, flexibility
-- __Predictable__ - Unidirectional data flow makes it easy to test, debug and reason about your application
+- __Simple__ - Reduced boilerplate, minimal interface, refined patterns, powerful flexibility
 - __Observable__ - Observable state keeps your components in sync automatically, eliminating unnecessary renders
-- __Immutable__ - Frozen state and thaw/replace updates provide baked in immutability
+- __Predictable__ - Unidirectional data makes it easy to test, debug and reason about your application
+- __Immutable__ - Frozen state along with thaw/replace updates provide baked in immutability
 - __DevTools__ - Helpful tools, including time travel, provide clear visibility of your state, actions, updates & observers
-
 
 ![Restore DevTools](http://i.imgur.com/eZZTPqU.gif)
 
@@ -20,12 +19,14 @@ npm install react-restore
 ## Creating a store
 
 A `store` holds the `state` of the application and the `actions` used to `update` that `state`
+
 ```javascript
 import Restore from 'react-restore'
 import * as actions from './actions'
 let initialState = {text: 'Hello World'}
 let store = Restore.create(initialState, actions)
 ```
+
 __Now we have a store!__
 
 ## Accessing values in the store
@@ -41,7 +42,7 @@ store('text') // 'Hello World'
 - `actions` are passed as an object during `store` creation
 - The `actions` object can be created explicitly or by using import syntax. e.g. `import * as actions from './actions'`
 
-Let's create an action called `setText` to `update` the `text` value in our `store`.
+Let's create an action called `setText` to `update` the `text` value in our `store`
 
 ```javascript
 export const setText = (update, newText) => {
@@ -51,7 +52,8 @@ export const setText = (update, newText) => {
   })
 }
 ```
-`setText` can now be called via the store
+
+`setText` can now be called via the `store`
 
 ```javascript
 store.setText('Updated World') 
@@ -66,12 +68,14 @@ This would update the value `text` in the `store` to `'Updated World'`
 - The `update` method uses a pure updater function
 
 If you look back at our `setText` `action` you can see our `updater` function
+
 ```javascript
 state => {
   state.text = newText
   return state
 }
 ```
+
 The `updater` function is passed the `state` (or part of the `state`) and returns an updated version of it
 
 ## Targeting state updates
@@ -81,6 +85,7 @@ The `updater` function is passed the `state` (or part of the `state`) and return
 - By doing this, only the components that care about what you're targeting will re-render and the rest will not
 
 For example, our `setText` `action` could be
+
 ```javascript
 export const setText = (update, newText) => {
  update('text', text => {
@@ -99,6 +104,7 @@ let store = Restore.create(initialState, actions)
 ```
 
 An `action` to `update` the nested value `wordTwo`
+
 ```javascript
 export const setNestedText = (update, newWordTwo) => {
   update('nested.wordTwo', wordTwo => newWordTwo)
@@ -106,9 +112,11 @@ export const setNestedText = (update, newWordTwo) => {
 ```
 
 Calling it is the same as before
+
 ```javascript
 store.setNestedText('Updated!')
 ```
+
 This would `update` the value of `wordTwo` from `'World'` to `'Updated!'`
 
 ## Connecting the store to your React components
@@ -135,6 +143,7 @@ To access the `store` from within a connected component, we do the same as befor
 ```javascript 
 this.store('text')
 ```
+
 ```javascript 
 this.store.setText('Updated World')
 ```
