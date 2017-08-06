@@ -2,10 +2,11 @@
 
 *A __simple__ state container for React apps*
 
+- __Simple__ - Reduced boilerplate, clean interface, refined patterns, flexibility
 - __Predictable__ - Unidirectional data flow makes it easy to test, debug and reason about your application
 - __Observable__ - Observable state keeps your components in sync automatically, eliminating unnecessary renders
 - __Immutable__ - Frozen state and thaw/replace updates provide baked in immutability
-- __DevTools__ - Helpful tools, including time travel, provide clear visibility of your state, actions, updates and observers.
+- __DevTools__ - Helpful tools, including time travel, provide clear visibility of your state, actions, updates & observers
 
 ![Restore DevTools](http://i.imgur.com/eZZTPqU.gif)
 
@@ -15,7 +16,7 @@
 npm install react-restore
 ```
 
-## Creating a `store`
+## Creating a store
 
 A `store` holds the `state` of the application and the `actions` used to `update` that `state`
 ```javascript
@@ -26,13 +27,14 @@ let store = Restore.create(initialState, actions)
 ```
 __Now we have a store!__
 
-## Accessing values in the `store`
+## Accessing values in the store
+
 To get the `text` value from the `store`
 ```javascript
 store('text') // 'Hello World'
 ```
 
-## Updating values in the `store`
+## Updating values in the store
 
 - `actions` are used to dispatch updates to the `store`
 - `actions` are passed as an object during `store` creation
@@ -56,7 +58,7 @@ store.setText('Updated World')
 
 This would update the value `text` in the `store` to `'Updated World'`
 
-## The `update` method
+## The update method
 
 - `actions` are passed the `update` method as their first argument (followed by arguments you passed)
 - The `update` method is how we replace values held by the `store`
@@ -71,7 +73,7 @@ state => {
 ```
 The `updater` function is passed the `state` (or part of the `state`) and returns an updated version of it
 
-## Targeting state updates with `update`
+## Targeting state updates
 
 - `update` takes a dot notation path as an optional first argument
 - This allows you to target part of the `state` instead of the whole `state`
@@ -86,7 +88,7 @@ export const setText = (update, newText) => {
 }
 ```
 
-Targeting updates with a more complex `state`
+__Targeting with a more complex `state`__
 
 ```javascript
 import Restore from 'react-restore'
@@ -108,7 +110,7 @@ store.setNestedText('Updated!')
 ```
 This would `update` the value of `wordTwo` from `'World'` to `'Updated!'`
 
-## Connecting the `store` to your `React` components
+## Connecting the store to your React components
 
 Connecting React components to the `store` is easy
 
