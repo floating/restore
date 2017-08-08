@@ -1,9 +1,9 @@
 # Restore
 
-*A __simple__ state container for React apps*
+*A predictable & observable state container for React apps*
 
 - __Simple__ - Reduced boilerplate, minimal interface, refined patterns
-- __Observable__ - Observable state keeps your components in sync automatically, eliminating unnecessary renders
+- __Observable__ - Subscriptions to value changes are automatic, eliminating unnecessary renders
 - __Predictable__ - Unidirectional data makes it easy to test, debug and reason about your application
 - __Immutable__ - Frozen state along with thaw/replace updates provide baked in immutability
 - __DevTools__ - Helpful tools, including time travel, provide clear visibility of your state, actions, updates & observers
@@ -35,12 +35,13 @@ To get the `text` value from the `store`
 ```javascript
 store('text') // 'Hello World'
 ```
-
 ## Updating values in the store
 
-- `actions` are used to dispatch updates to the `store`
-- `actions` are passed as an object during `store` creation
-- The `actions` object can be created explicitly or by using import syntax. e.g. `import * as actions from './actions'`
+* `actions` are used to make updates to the state of the `store`
+* `actions` are passed as an object during the `store`'s creation
+* The `actions` object can be created explicitly or by using import syntax
+  * e.g. `import * as actions from './actions'`
+* `actions` contain the whole lifecycle of an update making async updates easy to create and track
 
 Let's create an action called `setText` to `update` the `text` value in our `store`
 
@@ -63,9 +64,9 @@ This would update the value `text` in the `store` to `'Updated World'`
 
 ## The update method
 
-- `actions` are passed the `update` method as their first argument (followed by arguments you passed)
+- `actions` are passed `update` as their first argument (followed by any arguments you passed to them)
 - The `update` method is how we replace values held by the `store`
-- The `update` method uses a pure updater function
+- The `update` method uses a pure updater function to preform these updates
 
 If you look back at our `setText` `action` you can see our `updater` function
 
@@ -76,12 +77,12 @@ state => {
 }
 ```
 
-The `updater` function is passed the `state` (or part of the `state`) and returns an updated version of it
+The `updater` function is passed the `state` (or more likely, part of the `state`) and returns an updated version of it
 
 ## Targeting state updates
 
 - `update` takes a dot notation path as an optional first argument
-- This allows you to target part of the `state` instead of the whole `state`
+- This path allows you to target part of the `state` instead of the whole `state`
 - By doing this, only the components that care about what you're targeting will re-render and the rest will not
 
 For example, our `setText` `action` could be
@@ -94,30 +95,35 @@ export const setText = (update, newText) => {
 }
 ```
 
-__Targeting with a more complex `state`__
+__Targeting a more complex `state`__
 
 ```javascript
 import Restore from 'react-restore'
 import * as actions from './actions'
-let initialState = {nested: {wordOne: 'Hello', wordTwo: 'World'}}
+let initialState = {
+  nested: {
+    wordOne: 'Hello', 
+    wordTwo: 'World'
+  }
+}
 let store = Restore.create(initialState, actions)
 ```
 
-An `action` to `update` the nested value `wordTwo`
+Let's create an `action` called `setNestedText` to `update` `wordTwo` in our `store`
 
 ```javascript
-export const setNestedText = (update, newWordTwo) => {
-  update('nested.wordTwo', wordTwo => newWordTwo)
+export const setNestedText = (update, newValue) => {
+  update('nested.wordTwo', wordTwo => newValue)
 }
 ```
 
 Calling it is the same as before
 
 ```javascript
-store.setNestedText('Updated!')
+store.setNestedText('Updated World')
 ```
 
-This would `update` the value of `wordTwo` from `'World'` to `'Updated!'`
+This would `update` the value of `wordTwo` from `'World'` to `'Updated World'`
 
 ## Connecting the store to your React components
 
@@ -130,21 +136,19 @@ Restore.connect(Component)
 - Once a component is connected, it will have access to the `store` via `this.store`
 - It will automatically re-render itself when a value it consumes from the `store` changes
 - A connected component inherits the `store` of its closest connected parent
-- At the top level of your app you will explicitly connect a `store` to the component since it has no parent to inherit from
-- That `store` that will be passed down to your other connected components
+- At the top-level of your app you will explicitly connect a `store`, since it has no parent to inherit from
+- This top-level `store` will be passed down to your other connected components
 - We recommend using a single top-level `store` for your app
 
 ```javascript
 Restore.connect(Component, store) // Explicitly connects store to Component
-Restore.connect(Component) // Component inherits store from parent Component
+Restore.connect(Component) // Component inherits store from closest parent Component
 ```
 
 To access the `store` from within a connected component, we do the same as before but this time referencing `this.store`
 ```javascript 
 this.store('text')
-```
-
-```javascript 
+// or
 this.store.setText('Updated World')
 ```
 
