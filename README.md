@@ -23,7 +23,7 @@ A `store` holds the `state` of the application and the `actions` used to `update
 ```javascript
 import Restore from 'react-restore'
 import * as actions from './actions'
-let initialState = {text: 'Hello World'}
+let initialState = {text: 'Hello', textObj: {nestedText: 'World'}}
 let store = Restore.create(initialState, actions)
 ```
 
@@ -33,8 +33,20 @@ __Now we have a store!__
 
 To get the `text` value from the `store`
 ```javascript
-store('text') // 'Hello World'
+store('text') // 'Hello'
 ```
+
+To get nested values like `nestedText`, you can use dot notation
+```javascript
+store('textObj.nestedText') // 'World'
+```
+
+or pass it as an extra argument
+```javascript
+store('textObj', 'nestedText') // 'World'
+```
+
+Any extra arguments passed to `store` will be concatenated into dot notation
 ## Updating values in the store
 
 * `actions` are used to make updates to the state of the `store`
