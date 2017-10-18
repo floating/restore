@@ -127,14 +127,13 @@ This would `update` the value of `wordTwo` from `'World'` to `'Updated World'`
 
 __Multi-arg Paths__
  
-Instead of concatenating a string for the path passed to `store` or `update`, you can define your path with multiple arguments. For example if you had the an id (`let id = 123`) for an item within the state you could break the path into multiple arguments, like so...
+Instead of concatenating a string for the path passed to `store` or `update`, you can define your path with multiple arguments. For example if you had an id (`let id = 123`) for an item within the state you could break the path into multiple arguments, like so...
 
 ```javascript
-let name = store('items', id, 'name') // will get the value of items[id].name from the store
+let name = store('items', id, 'name') // Gets the value of items[id].name from the store
 
-// or when updating, the last argument is always the updater function
-
-update('items', id, 'name', name => 'bar') // will update the value of items[id].name to 'bar'
+// When updating, the last argument is always the updater function
+update('items', id, 'name', name => 'bar') // Updates the value of items[id].name to 'bar'
 ```
 
 ## Connecting the store to your React components
