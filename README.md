@@ -126,24 +126,17 @@ store.setNestedText('Updated World')
 This would `update` the value of `wordTwo` from `'World'` to `'Updated World'`
 
 __Multi-arg Paths__
-
-Any extra arguments passed to `store` and `update` will be concatenated into a path (except the last one for `update` which should be an updater function). This makes retrieving or updating nested values using variables possible
-
-```javascript
-items: {
-  123: {
-    name: 'foo'
-  }
-}
-```
+ 
+Instead of concatenating a string for the path passed to `store` or `update`, you can define your path with multiple arguments. For example if you had the `id` (`let id = 'a123'`) for an item within the state (`{items: {a123: {name: 'foo'}}}`) you could break the path into multiple arguments, like so...
 
 ```javascript
-let id = 123
+let name = store('items', id, 'name') // 'foo'
 
-store('items', id, 'name') // 'foo'
+// or when updating
 
-update('items', id, 'name', name => 'bar') // would update name from 'foo' to 'bar'
+update('items', id, 'name', name => 'bar') // would update items[123].name from 'foo' to 'bar'
 ```
+
 ## Connecting the store to your React components
 
 Connecting React components to the `store` is easy
