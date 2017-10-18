@@ -163,6 +163,30 @@ this.store('text')
 this.store.setText('Updated World')
 ```
 
+## Async Updates
+
+Actions can contain synchronous and asynchronous updates, both are tracked and attributed to the action throughout its lifecycle. Here we'll make our `setText` action get the `newText` value from the server and then update the state asynchronously.
+
+``` javascript
+export const setText = update => {
+  getTextFromServer(newText => {
+    update('text', text => newText)
+  })
+}
+```
+
+It can be useful to compose synchronous and asynchronous updates together. Say you wanted to show a loading message while you fetched the `newText` value from the server. You could update a `loading` flag synchronously and then unset it later when you get the response.
+
+``` javascript
+export const setText = update => {
+  update('loading', loading => true)
+  getTextFromServer(newText => {
+    update('loading', loading => false)
+    update('text', text => newText)
+  })
+}
+```
+
 ## Enabling DevTools / Time Travel
 
 - Restore ships with a dev tools component `<Restore.DevTools />`
