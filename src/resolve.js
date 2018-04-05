@@ -37,7 +37,7 @@ export const resolve = (internal, action, tree = {}, name) => {
   } else if (typeof action === 'object') {
     Object.keys(action).forEach(key => { tree[key] = resolve(internal, action[key], tree[key], name ? `${name}.${key}` : key) })
   } else {
-    throw new Error(`[Restore] Invlaid entry in action tree: '${name}' is a ${typeof action}.`)
+    throw new Error(`[Restore] Invalid entry in action tree: '${name}' is a ${typeof action}.`)
   }
   return tree
 }
