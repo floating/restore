@@ -36,7 +36,7 @@ export const create = (state = {}, actions = {}, options) => {
   store.observer = (run, id, alt) => {
     id = id || uuid()
     if (internal.order.indexOf(id) === -1) internal.order.push(id)
-    internal.observers[id] = {links: [], run: alt || run}
+    internal.observers[id] = {links: internal.observers[id] ? internal.observers[id].links : [], run: alt || run}
     return {returned: observe(internal, id, run), remove: () => store.api.remove(id)}
   }
   store.api = {

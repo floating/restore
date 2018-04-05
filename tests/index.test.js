@@ -433,3 +433,52 @@ test('Multi-arg paths', done => {
   })
   store.updateV()
 })
+
+test('Observer Deregister', done => {
+  let c = 0
+  let actions = {
+    updateTestOne: (update) => update('testOne', testOne => testOne + 1),
+    updateTestTwo: (update) => update('testTwo', testTwo => testTwo + 1),
+    updateTestThree: (update) => update('testThree', testThree => testThree + 1)
+  }
+  const store = Restore.create({testOne: 0, testTwo: 0, testThree: 0}, actions)
+  class App extends React.Component {
+    render () {
+      c++
+      if (this.props.one === 2) {
+        if (store('testTwo') === 2) {
+          expect(c).toBe(4)
+          done()
+        } else {
+          expect(store('testTwo')).toBe(1)
+          return null
+        }
+      } else {
+        expect(store('testThree')).toBe(0)
+        return null
+      }
+    }
+  }
+  let ConnectedApp = Restore.connect(App)
+  class Wrap extends React.Component {
+    render () {
+      return <ConnectedApp one={store('testOne')} />
+    }
+  }
+  const Root = Restore.connect(Wrap, store)
+  ReactDOM.render(<Root />, document.createElement('div'))
+
+  store.updateTestOne() // Updates Observer
+  setTimeout(() => {
+    store.updateTestTwo() // Doesn't Update Observer
+    setTimeout(() => {
+      store.updateTestOne() // Updates Observer
+      setTimeout(() => {
+        store.updateTestThree() // Doesn't Update Observer
+        setTimeout(() => {
+          store.updateTestTwo()  // Updates Observer
+        }, 0)
+      }, 0)
+    }, 0)
+  }, 0)
+})
