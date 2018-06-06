@@ -1,7 +1,6 @@
 import path from 'path'
 import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
-import uglify from 'rollup-plugin-uglify'
 
 let pkg = require('./package.json')
 let external = Object.keys(pkg.peerDependencies || {})
@@ -23,7 +22,6 @@ export default {
       presets: ['react', ['es2015', {'modules': false}], 'stage-0'],
       plugins: ['external-helpers'],
       babelrc: false
-    }),
-    uglify()
+    })
   ]
 }
