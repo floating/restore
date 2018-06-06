@@ -273,9 +273,18 @@ test('Test Render Children With Actions', done => {
 
 test('Standalone Observer', done => {
   let store = Restore.create({count: 0}, {add: (update, num) => update('count', count => count + num)})
-  store.observer(s => {
+  store.observer((s, r) => {
     expect(store('count')).toBe(0)
     expect(s('count')).toBe(0)
+    expect(r).toBeTruthy()
+    r()
+    done()
+  })
+  store.observer(function () {
+    expect(store('count')).toBe(0)
+    expect(this.store('count')).toBe(0)
+    expect(this.remove).toBeTruthy()
+    this.remove()
     done()
   })
 })
