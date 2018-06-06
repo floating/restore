@@ -62,6 +62,7 @@ export const create = (state = {}, actions = {}, options) => {
         if (l > -1) internal.links[link].splice(l, 1)
       })
       delete internal.observers[id]
+      if (internal.track === id) internal.track = null
     },
     report: id => {
       let i = internal.pending.indexOf(id)

@@ -278,6 +278,9 @@ test('Standalone Observer', done => {
     expect(s('count')).toBe(0)
     expect(r).toBeTruthy()
     r()
+    // Get store values after remove without tracking issues
+    expect(store('count')).toBe(0)
+    expect(s('count')).toBe(0)
     done()
   })
   store.observer(function () {
@@ -285,6 +288,9 @@ test('Standalone Observer', done => {
     expect(this.store('count')).toBe(0)
     expect(this.remove).toBeTruthy()
     this.remove()
+    // Get store values after remove without tracking issues
+    expect(store('count')).toBe(0)
+    expect(this.store('count')).toBe(0)
     done()
   })
 })
