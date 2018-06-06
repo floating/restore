@@ -7,7 +7,8 @@ const observe = (internal, id, run) => {
   internal.observers[id].links = []
   run = run || internal.observers[id].run
   internal.track = id
-  let returned = run(internal.store)
+  let self = {store: internal.store, remove: () => internal.store.api.remove(id)}
+  let returned = run.call(self, self.store, self.remove)
   internal.track = null
   // When observer links change, remove them
   links.filter(x => internal.observers[id].links.indexOf(x) < 0).forEach(link => {
