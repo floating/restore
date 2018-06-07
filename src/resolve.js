@@ -30,7 +30,11 @@ export const resolve = (internal, action, tree = {}, name) => {
           if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
         }
       }
-      action(update, ...args)
+      if (internal.track) {
+        setTimeout(() => action(update, ...args), 0) // Action within observer
+      } else {
+        action(update, ...args)
+      }
       setTimeout(() => { deferred = true }, 0)
       return internal.store
     }

@@ -1,6 +1,6 @@
 {
   "name": "react-restore",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "A predictable and observable state container for React apps",
   "main": "lib/index.js",
   "author": "C. Jordan Muir <cjm712@gmail.com> (https://github.com/floating)",
@@ -28,7 +28,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "gzip-size-cli": "^2.0.0",
-    "jest-cli": "^20.0.4",
+    "jest-cli": "^23.1.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "rollup": "^0.45.2",

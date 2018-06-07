@@ -272,28 +272,41 @@ test('Test Render Children With Actions', done => {
 })
 
 test('Standalone Observer', done => {
-  let store = Restore.create({count: 0}, {add: (update, num) => update('count', count => count + num)})
+  let store = Restore.create({count: 0, other: 1, remove: 1}, {add: (update, num) => update('count', count => count + num)})
   store.observer((s, r) => {
-    expect(store('count')).toBe(0)
-    expect(s('count')).toBe(0)
+    expect(store('count')).toBeLessThanOrEqual(1)
+    expect(s('count')).toBeLessThanOrEqual(1)
     expect(r).toBeTruthy()
     r()
     // Get store values after remove without tracking issues
-    expect(store('count')).toBe(0)
-    expect(s('count')).toBe(0)
-    done()
+    expect(store('count')).toBeLessThanOrEqual(1)
+    expect(s('count')).toBeLessThanOrEqual(1)
   })
   store.observer(function () {
-    expect(store('count')).toBe(0)
-    expect(this.store('count')).toBe(0)
+    expect(store('count')).toBeLessThanOrEqual(1)
+    expect(this.store('count')).toBeLessThanOrEqual(1)
     expect(this.remove).toBeTruthy()
-    this.remove()
     // Get store values after remove without tracking issues
-    expect(store('count')).toBe(0)
-    expect(this.store('count')).toBe(0)
+    expect(store('count')).toBeLessThanOrEqual(1)
+    expect(this.store('count')).toBeLessThanOrEqual(1)
+    if (this.store('count') === 0) {
+      expect(this.store('remove')).toBe(1) // A link we won't need on the second run
+      return this.store.add(1)
+    }
+    expect(this.store('other')).toBe(1) // A link we only need on the second run
+    this.remove()
     done()
   })
 })
+
+test('Observer Actions', done => {
+  let store = Restore.create({count: 0}, {add: (update, num) => update('count', count => count + num)})
+  store.observer(() => {
+    if (store('count') < 10) return store.add(1)
+    done()
+  })
+})
+
 
 test('Observer Reregister', done => {
   let c = 0
@@ -464,6 +477,7 @@ test('Observer Deregister', done => {
         if (store('testTwo') === 2) {
           expect(c).toBe(4)
           done()
+          return null
         } else {
           expect(store('testTwo')).toBe(1)
           return null
