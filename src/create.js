@@ -53,16 +53,16 @@ export const create = (state = {}, actions = {}, options) => {
       return { remove: () => delete internal.watchers[id] }
     },
     remove: id => {
+      if (internal.track === id) internal.track = null
       let p = internal.pending.indexOf(id)
       if (p > -1) internal.pending.splice(p, 1)
       let o = internal.order.indexOf(id)
       if (o > -1) internal.order.splice(o, 1)
-      internal.observers[id].links.forEach(link => {
+      Object.keys(internal.links).forEach(link => {
         let l = internal.links[link].indexOf(id)
         if (l > -1) internal.links[link].splice(l, 1)
       })
       delete internal.observers[id]
-      if (internal.track === id) internal.track = null
     },
     report: id => {
       let i = internal.pending.indexOf(id)
