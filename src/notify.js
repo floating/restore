@@ -13,6 +13,7 @@ const process = internal => {
 }
 
 export const notify = internal => {
+  // expand(internal) returns all paths touched by changes
   expand(internal).forEach(target => { internal.pending = internal.pending.concat(internal.links[target]) })
   internal.pending = [...new Set(internal.pending)]
   internal.pending.sort((a, b) => internal.order.indexOf(a) - internal.order.indexOf(b))
