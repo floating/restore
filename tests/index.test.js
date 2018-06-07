@@ -307,7 +307,6 @@ test('Observer Actions', done => {
   })
 })
 
-
 test('Observer Reregister', done => {
   let c = 0
   let actions = {
