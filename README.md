@@ -189,16 +189,14 @@ export const setText = update => {
 
 ## Enabling DevTools / Time Travel
 
-Restore has a dev tools component `<DevTools />` you can use to observer and time travel actions and state
-
+Restore has a `<DevTools />` component you can use to observer and time travel actions and state
 ```
-npm install restore-devtools
+npm install restore-devtools --save-dev
 ```
-
 ```javascript
 import DevTools from 'restore-devtools'
 ```
-Drop it anywhere in your application to enable the dev tools
+Drop `<DevTools />` anywhere in your application to enable the dev tools
 
 ## Standalone Observers
 
@@ -262,3 +260,6 @@ let Root = Restore.connect(App, store)
 ReactDOM.render(<Root />, document.getElementById('root'))
 
 ```
+
+## Projects using Restore
+  - [Frame](https://github.com/floating/frame) - A cross-platform Ethereum interface
