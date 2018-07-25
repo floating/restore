@@ -333,7 +333,7 @@ test('Observer Reregister', done => {
     setTimeout(() => {
       store.updateTestOne() // Updates Observer
       setTimeout(() => {
-        store.updateTestTwo()  // Updates Observer
+        store.updateTestTwo() // Updates Observer
       }, 0)
     }, 0)
   }, 0)
@@ -504,7 +504,7 @@ test('Observer Deregister', done => {
       setTimeout(() => {
         store.updateTestThree() // Doesn't Update Observer
         setTimeout(() => {
-          store.updateTestTwo()  // Updates Observer
+          store.updateTestTwo() // Updates Observer
         }, 0)
       }, 0)
     }, 0)

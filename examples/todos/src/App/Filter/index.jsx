@@ -2,7 +2,7 @@ import React from 'react'
 import Restore from 'react-restore'
 
 class Filter extends React.Component {
-  visibilityLink = (visibility) => {
+  visibilityLink (visibility) {
     if (this.store('visibility') === visibility) return <span>{visibility}</span>
     let clickVisibility = (e) => {
       e.preventDefault()
