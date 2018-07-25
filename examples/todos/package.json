@@ -8,8 +8,8 @@
   "dependencies": {
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-restore": "^0.2.1",
-    "restore-devtools": "0.0.1"
+    "react-restore": "^0.3.0",
+    "restore-devtools": "^0.0.1"
   },
   "scripts": {
     "start": "react-scripts start"
