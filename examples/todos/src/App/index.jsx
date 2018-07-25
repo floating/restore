@@ -1,5 +1,6 @@
 import React from 'react'
 import Restore from 'react-restore'
+import DevTools from 'restore-devtools'
 
 import Add from './Add'
 import List from './List'
@@ -10,7 +11,7 @@ let App = () => (
     <Add />
     <List />
     <Filter />
-    <Restore.DevTools />
+    <DevTools />
   </div>
 )
 
