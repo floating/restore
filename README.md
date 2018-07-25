@@ -188,9 +188,9 @@ export const setText = update => {
 }
 ```
 
-## Enabling DevTools / Time Travel
+## Enabling [DevTools](https://github.com/floating/restore-devtools)  / Time Travel
 
-Restore has a `<DevTools />` component you can use to observer and time travel actions and state
+Restore has a `<DevTools />` component you can use to observer and time travel actions and state (https://github.com/floating/restore-devtools)
 ```
 npm install restore-devtools --save-dev
 ```
