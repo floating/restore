@@ -57,7 +57,7 @@ export const setText = (update, newText) => {
 `setText` can now be called via the `store`
 
 ```javascript
-store.setText('Updated World') 
+store.setText('Updated World')
 ```
 
 This would update the value `text` in the `store` to `'Updated World'`
@@ -102,7 +102,7 @@ import Restore from 'react-restore'
 import * as actions from './actions'
 let initialState = {
   nested: {
-    wordOne: 'Hello', 
+    wordOne: 'Hello',
     wordTwo: 'World'
   }
 }
@@ -126,7 +126,7 @@ store.setNestedText('Updated World')
 This would `update` the value of `wordTwo` from `'World'` to `'Updated World'`
 
 __Multi-arg Paths__
- 
+
 Instead of concatenating a string for the path passed to `store` or `update`, you can define your path with multiple arguments. For example if you had an id (`let id = 123`) for an item within the state you could break the path into multiple arguments, like so...
 
 ```javascript
@@ -157,7 +157,7 @@ Restore.connect(Component) // Component inherits store from closest parent Compo
 ```
 
 To access the `store` from within a connected component, we do the same as before but this time referencing `this.store`
-```javascript 
+```javascript
 this.store('text')
 // or
 this.store.setText('Updated World')
@@ -189,8 +189,16 @@ export const setText = update => {
 
 ## Enabling DevTools / Time Travel
 
-- Restore ships with a dev tools component `<Restore.DevTools />`
-- Drop it anywhere in your application to enable the dev tools
+Restore has a dev tools component `<DevTools />` you can use to observer and time travel actions and state
+
+```
+npm install restore-devtools
+```
+
+```javascript
+import DevTools from 'restore-devtools'
+```
+Drop it anywhere in your application to enable the dev tools
 
 ## Standalone Observers
 
