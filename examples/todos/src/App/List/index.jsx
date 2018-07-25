@@ -2,11 +2,11 @@ import React from 'react'
 import Restore from 'react-restore'
 
 class List extends React.Component {
-  renderTodo = (todo) => {
+  renderTodo (todo) {
     let style = {textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer'}
     return <li style={style} key={todo.id} onClick={() => this.store.toggleTodo(todo.id)}>{todo.text}</li>
   }
-  filterTodo = (todo) => {
+  filterTodo (todo) {
     let visibility = this.store('visibility')
     if (visibility === 'All') return true
     if (visibility === 'Active' && !todo.completed) return true
@@ -14,7 +14,7 @@ class List extends React.Component {
     return false
   }
   render () {
-    return <ul>{this.store('todos').filter(this.filterTodo).map(this.renderTodo)}</ul>
+    return <ul>{this.store('todos').filter(todo => this.filterTodo(todo)).map(todo => this.renderTodo(todo))}</ul>
   }
 }
 

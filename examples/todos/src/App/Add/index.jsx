@@ -2,7 +2,7 @@ import React from 'react'
 import Restore from 'react-restore'
 
 class Add extends React.Component {
-  addTodo = (e) => {
+  addTodo (e) {
     e.preventDefault()
     if (!this.input.value.trim()) return
     this.store.addTodo(this.input.value)
@@ -11,7 +11,7 @@ class Add extends React.Component {
   render () {
     return (
       <div>
-        <form onSubmit={this.addTodo}>
+        <form onSubmit={e => this.addTodo(e)}>
           <input ref={(i) => { this.input = i }} />
           <button type='submit'>Add Todo</button>
         </form>

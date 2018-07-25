@@ -3,15 +3,16 @@ import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
 
 let pkg = require('./package.json')
-let external = Object.keys(pkg.peerDependencies || {})
 
 export default {
-  entry: path.resolve(__dirname, 'src/index.js'),
-  dest: path.resolve(__dirname, 'lib/index.js'),
-  exports: 'named',
-  useStrict: true,
-  external: external,
-  globals: {react: 'React'},
+  input: path.resolve(__dirname, 'src/index.js'),
+  output: {
+    file: path.resolve(__dirname, 'lib/index.js'),
+    globals: {react: 'React'},
+    strict: true,
+    exports: 'named'
+  },
+  external: Object.keys(pkg.peerDependencies || {}),
   plugins: [
     resolve({
       extensions: [ '.js', '.jsx' ]
