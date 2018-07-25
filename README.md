@@ -2,7 +2,8 @@
 
 *A predictable & observable state container for React apps*
 
-- __Simple__ - Reduced boilerplate, minimal interface, refined patterns, ~5kB
+
+- __Simple__ - Reduced boilerplate, minimal interface, refined patterns, __~5kB__
 - __Observable__ - Subscriptions to value changes are automatic, eliminating unnecessary renders
 - __Predictable__ - Unidirectional data makes it easy to test, debug and reason about your application
 - __Immutable__ - Frozen state along with thaw/replace updates provide baked in immutability
