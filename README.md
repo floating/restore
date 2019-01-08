@@ -67,7 +67,7 @@ This would update the value `text` in the `store` to `'Updated World'`
 
 - `actions` are passed `update` as their first argument (followed by any arguments you passed to them)
 - The `update` method is how we replace values held by the `store`
-- The `update` method uses a pure updater function to preform these updates
+- The `update` method uses a pure updater function to perform these updates
 
 If you look back at our `setText` `action` you can see our `updater` function
 
@@ -190,7 +190,7 @@ export const setText = update => {
 
 ## Enabling [DevTools](https://github.com/floating/restore-devtools)  / Time Travel
 
-Restore has a `<DevTools />` component you can use to observer and time travel actions and state
+Restore has a `<DevTools />` component you can use to observe updates to the state and time travel through past actions
 ```
 npm install restore-devtools --save-dev
 ```
