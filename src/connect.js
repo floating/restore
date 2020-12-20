@@ -14,8 +14,8 @@ export const connect = (Component, store) => {
   Component = Component._restoreOrigin || Component
 
   // Wrap Stateless Components
-  if (typeof Component === 'function' && (!Component.prototype || !Component.prototype.render) && !Component.isReactClass && !React.Component.isPrototypeOf(Component)) {
-    let statelessRender = Component
+  if (typeof Component === 'function' && (!Component.prototype || !Component.prototype.render) && !Component.isReactClass && !Object.prototype.isPrototypeOf.call(React.Component, Component)) {
+    const statelessRender = Component
     class Stateless extends React.Component { render () { return statelessRender.call(this, this.props, this.context) } }
     Stateless.displayName = Component.displayName || Component.name
     Stateless.propTypes = Component.propTypes
@@ -31,24 +31,27 @@ export const connect = (Component, store) => {
       this.restoreIdentity = uuid()
       this.store = store || this.context.store
     }
+
     getChildContext () {
-      let childContext = store ? {store, restoreParent: this.restoreIdentity} : {restoreParent: this.restoreIdentity}
+      let childContext = store ? { store, restoreParent: this.restoreIdentity } : { restoreParent: this.restoreIdentity }
       if (super.getChildContext) childContext = Object.assign({}, super.getChildContext(), childContext)
       return childContext
     }
+
     componentWillUnmount () {
       this.store.api.remove(this.restoreIdentity)
       if (super.componentWillUnmount) super.componentWillUnmount()
     }
+
     render (...args) {
-      let observer = this.store.observer(super.render.bind(this, ...args), this.restoreIdentity, () => this.forceUpdate())
+      const observer = this.store.observer(super.render.bind(this, ...args), this.restoreIdentity, () => this.forceUpdate())
       this.store.api.report(this.restoreIdentity)
       return observer.returned
     }
   }
   Connected.childContextTypes = Connected.childContextTypes || {}
   Connected.childContextTypes.restoreParent = isRequired
-  let type = store ? 'childContextTypes' : 'contextTypes'
+  const type = store ? 'childContextTypes' : 'contextTypes'
   Connected[type] = Connected[type] || {}
   Connected[type].restoreParent = isRequired
   Connected[type].store = isRequired

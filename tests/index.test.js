@@ -9,13 +9,13 @@ const isRequired = (props, propName, componentName) => {
 }
 
 test('Catch Navigation Past Non-object Value', () => {
-  const store = Restore.create({test: 'Hello World'}, {})
+  const store = Restore.create({ test: 'Hello World' }, {})
   expect(store('test')).toBeTruthy()
   expect(() => store('test.deeper')).toThrow()
 })
 
 test('Pure Render Components Test', done => {
-  let renderCount = {Connected: 0, PureA: 0, PureB: 0, Impure: 0}
+  const renderCount = { Connected: 0, PureA: 0, PureB: 0, Impure: 0 }
   class PureA extends React.PureComponent {
     render () {
       renderCount.PureA++
@@ -46,7 +46,7 @@ test('Pure Render Components Test', done => {
   class Connected extends React.Component {
     render () {
       renderCount.Connected++
-      let aa = this.store('a.a')
+      const aa = this.store('a.a')
       return (
         <div>
           <Impure aab={aa.b} />
@@ -56,10 +56,10 @@ test('Pure Render Components Test', done => {
       )
     }
   }
-  let initialState = {a: {a: {a: {value: 0}, b: {value: 0}}}}
-  let actions = {
-    aaaPlus: (update) => update('a.a.a', (a) => { return {value: a.value + 1} }),
-    aabPlus: (update) => update('a.a.b', (b) => { return {value: b.value + 1} })
+  const initialState = { a: { a: { a: { value: 0 }, b: { value: 0 } } } }
+  const actions = {
+    aaaPlus: (update) => update('a.a.a', (a) => { return { value: a.value + 1 } }),
+    aabPlus: (update) => update('a.a.b', (b) => { return { value: b.value + 1 } })
   }
   const store = Restore.create(initialState, actions)
   const Root = Restore.connect(Connected, store)
@@ -69,7 +69,7 @@ test('Pure Render Components Test', done => {
 })
 
 test('Target Render Counts', done => {
-  let renderCount = {app: 0, deep: 0, deeper: 0}
+  const renderCount = { app: 0, deep: 0, deeper: 0 }
   class Deeper extends React.Component {
     render () {
       renderCount.deeper++
@@ -82,27 +82,27 @@ test('Target Render Counts', done => {
       return <div>{this.store('numThree')}</div>
     }
   }
-  let DeeperConnected = Restore.connect(Deeper)
+  const DeeperConnected = Restore.connect(Deeper)
   class Deep extends React.Component {
     render () {
       renderCount.deep++
       return <DeeperConnected num={this.store('numTwo')} />
     }
   }
-  let DeepConnected = Restore.connect(Deep)
+  const DeepConnected = Restore.connect(Deep)
   class App extends React.Component {
     render () {
       renderCount.app++
       return <DeepConnected num={this.store('numOne')} />
     }
   }
-  let actions = {
+  const actions = {
     updateOne: u => u('numOne', numOne => numOne * 2),
     updateTwo: u => u('numTwo', numTwo => numTwo * 2),
     updateThree: u => u('numThree', numThree => numThree * 2),
     updateDone: u => u('done', done => true)
   }
-  const store = Restore.create({numOne: 2, numTwo: 4, numThree: 8, done: false}, actions)
+  const store = Restore.create({ numOne: 2, numTwo: 4, numThree: 8, done: false }, actions)
   const Root = Restore.connect(App, store)
   ReactDOM.render(<Root />, document.createElement('div'))
   setTimeout(() => {
@@ -112,8 +112,8 @@ test('Target Render Counts', done => {
 })
 
 test('Nesting stores', () => {
-  const storeOne = Restore.create({number: 1}, {})
-  const storeTwo = Restore.create({number: 2}, {})
+  const storeOne = Restore.create({ number: 1 }, {})
+  const storeTwo = Restore.create({ number: 2 }, {})
   class Nest extends React.Component {
     render () {
       expect(this.store('number')).toBe(2)
@@ -134,8 +134,8 @@ test('Nesting stores', () => {
 test('Connect Stateless Components', () => {
   let Nest = function () { return <div> {this.store('test')} </div> }
   Nest = Restore.connect(Nest)
-  let App = () => <Nest />
-  const store = Restore.create({test: 'Hello World'}, {})
+  const App = () => <Nest />
+  const store = Restore.create({ test: 'Hello World' }, {})
   const Root = Restore.connect(App, store)
   ReactDOM.render(<Root />, document.createElement('div'))
 })
@@ -144,16 +144,17 @@ test('constructor in Connected Component', () => {
   class App extends React.Component {
     constructor (...args) {
       super(...args)
-      this.state = {number: 2}
+      this.state = { number: 2 }
     }
+
     render () {
       expect(this.state.number).toBe(2)
       expect(this.store('number')).toBe(4)
       return null
     }
   }
-  let Double = Restore.connect(App)
-  const store = Restore.create({number: 4}, {})
+  const Double = Restore.connect(App)
+  const store = Restore.create({ number: 4 }, {})
   const Root = Restore.connect(Double, store)
   ReactDOM.render(<Root />, document.createElement('div'))
 })
@@ -168,20 +169,21 @@ test('getChildContext in Connected Component', () => {
       return null
     }
   }
-  RecieveContext.contextTypes = {test: isRequired}
-  let Recieve = Restore.connect(RecieveContext)
+  RecieveContext.contextTypes = { test: isRequired }
+  const Recieve = Restore.connect(RecieveContext)
   class App extends React.Component {
     getChildContext () {
-      return {test: 'Hello World'}
+      return { test: 'Hello World' }
     }
+
     render () {
       expect(this.store('test')).toBe('Hello World')
       return <Recieve />
     }
   }
-  App.childContextTypes = {test: isRequired}
-  let Double = Restore.connect(App)
-  const store = Restore.create({test: 'Hello World'}, {})
+  App.childContextTypes = { test: isRequired }
+  const Double = Restore.connect(App)
+  const store = Restore.create({ test: 'Hello World' }, {})
   const Root = Restore.connect(Double, store)
   ReactDOM.render(<Root />, document.createElement('div'))
 })
@@ -192,7 +194,7 @@ test('componentWillUnmount in Connected Component', done => {
     render () { return null }
   }
   const Root = Restore.connect(App, Restore.create({}, {}))
-  let container = document.createElement('div')
+  const container = document.createElement('div')
   ReactDOM.render(<Root />, container)
   ReactDOM.unmountComponentAtNode(container)
 })
@@ -202,6 +204,7 @@ test('Cast Nested Objects', done => {
     componentDidMount () {
       this.store.updateTest()
     }
+
     render () {
       if (this.store('updated')) {
         expect(this.store('test.deep.deeper')).toBe('Hello World')
@@ -212,7 +215,7 @@ test('Cast Nested Objects', done => {
       return null
     }
   }
-  let actions = {
+  const actions = {
     updateTest: (update, text) => {
       update('test.deep.deeper', deeper => 'Hello World')
       update('updated', updated => true)
@@ -234,6 +237,7 @@ test('Test Render Children With Actions', done => {
     componentDidMount () {
       this.store.updateTest('Updated World!')
     }
+
     render () {
       if (this.store('updated')) {
         expect(this.store('test')).toBe('Updated World!')
@@ -245,7 +249,7 @@ test('Test Render Children With Actions', done => {
       return null
     }
   }
-  let ChildWithStoreConnected = Restore.connect(ChildWithStore)
+  const ChildWithStoreConnected = Restore.connect(ChildWithStore)
   class App extends React.Component {
     render () {
       expect(this.store('test')).toBeTruthy()
@@ -257,7 +261,7 @@ test('Test Render Children With Actions', done => {
       )
     }
   }
-  let actions = {
+  const actions = {
     updateTest: (update, text) => {
       update(state => {
         state.updated = true
@@ -266,13 +270,13 @@ test('Test Render Children With Actions', done => {
       })
     }
   }
-  const store = Restore.create({test: 'Hello World', updated: false}, actions)
+  const store = Restore.create({ test: 'Hello World', updated: false }, actions)
   const Root = Restore.connect(App, store)
   ReactDOM.render(<Root />, document.createElement('div'))
 })
 
 test('Standalone Observer', done => {
-  let store = Restore.create({count: 0, other: 1, remove: 1}, {add: (update, num) => update('count', count => count + num)})
+  const store = Restore.create({ count: 0, other: 1, remove: 1 }, { add: (update, num) => update('count', count => count + num) })
   store.observer((s, r) => {
     expect(store('count')).toBeLessThanOrEqual(1)
     expect(s('count')).toBeLessThanOrEqual(1)
@@ -300,7 +304,7 @@ test('Standalone Observer', done => {
 })
 
 test('Observer Actions', done => {
-  let store = Restore.create({count: 0}, {add: (update, num) => update('count', count => count + num)})
+  const store = Restore.create({ count: 0 }, { add: (update, num) => update('count', count => count + num) })
   store.observer(() => {
     if (store('count') < 10) return store.add(1)
     done()
@@ -309,11 +313,11 @@ test('Observer Actions', done => {
 
 test('Observer Reregister', done => {
   let c = 0
-  let actions = {
+  const actions = {
     updateTestOne: (update) => update('testOne', testOne => testOne + 1),
     updateTestTwo: (update) => update('testTwo', testTwo => testTwo + 1)
   }
-  const store = Restore.create({testOne: 0, testTwo: 0, testThree: 0}, actions)
+  const store = Restore.create({ testOne: 0, testTwo: 0, testThree: 0 }, actions)
   store.observer(() => {
     c++
     if (store('testOne') === 2) {
@@ -340,7 +344,7 @@ test('Observer Reregister', done => {
 })
 
 test('Immutability for PureComponents', done => {
-  let renderCounts = {PureA: 0, PureABX: 0, PureC: 0, Pure: 0}
+  const renderCounts = { PureA: 0, PureABX: 0, PureC: 0, Pure: 0 }
   class PureA extends React.PureComponent {
     render () {
       renderCounts.PureA++
@@ -378,9 +382,9 @@ test('Immutability for PureComponents', done => {
   }
   class App extends React.Component {
     render () {
-      let a = this.store('a')
-      let c = this.store('c')
-      let store = this.store()
+      const a = this.store('a')
+      const c = this.store('c')
+      const store = this.store()
       return (
         <div>
           <Pure store={store} />
@@ -391,11 +395,11 @@ test('Immutability for PureComponents', done => {
       )
     }
   }
-  let actions = {
+  const actions = {
     updateZ: (update) => update('a.b.y.z', z => z + 1),
     updateC2: (update) => update('c[2]', v => v + 1)
   }
-  const store = Restore.create({a: {b: {x: 0, y: {z: 0}}}, c: [0, 0, 0]}, actions)
+  const store = Restore.create({ a: { b: { x: 0, y: { z: 0 } } }, c: [0, 0, 0] }, actions)
   const Root = Restore.connect(App, store)
   ReactDOM.render(<Root />, document.createElement('div'))
   store.updateZ()
@@ -409,7 +413,7 @@ test('Immutability for PureComponents', done => {
 
 test('Array Access', done => {
   let c = 0
-  let actions = {
+  const actions = {
     makeArray: (update, path) => update(path, () => []),
     pushToArray: (update, path, value) => update(path, arr => {
       arr.push(value)
@@ -420,7 +424,7 @@ test('Array Access', done => {
   const store = Restore.create({}, actions)
   store.observer(() => {
     c++
-    let arr = store('a.b.c.d.arr')
+    const arr = store('a.b.c.d.arr')
     if (arr) expect(arr[2]).toBe(0)
     if (store('a.b.c.d.arr[1]') === 2 && c === 3) done()
   })
@@ -429,15 +433,15 @@ test('Array Access', done => {
 })
 
 test('Read-only safeguard', done => {
-  let actions = {updateV: (update) => update('z', z => { return {y: {x: {v: z.y.x.v + 1}}} })}
-  const store = Restore.create({a: {b: 0}, z: {y: {x: {v: 0}}}}, actions)
+  const actions = { updateV: (update) => update('z', z => { return { y: { x: { v: z.y.x.v + 1 } } } }) }
+  const store = Restore.create({ a: { b: 0 }, z: { y: { x: { v: 0 } } } }, actions)
   store.observer(() => {
-    let a = store('a')
+    const a = store('a')
     expect(() => { a.b = 1 }).toThrow()
   })
   store.observer(() => {
-    let z = store('z')
-    let y = z.y
+    const z = store('z')
+    const y = z.y
     expect(() => { y.x.v = 2 }).toThrow()
     if (y.x.v === 1) {
       expect(() => { y.x.o = 2 }).toThrow()
@@ -450,10 +454,10 @@ test('Read-only safeguard', done => {
 })
 
 test('Multi-arg paths', done => {
-  let actions = {updateV: (update) => update('z', 'y.x', 'v', v => v + 1)}
-  const store = Restore.create({a: {b: 0, c: {d: 0}}, z: {y: {x: {v: 0}}}}, actions)
+  const actions = { updateV: (update) => update('z', 'y.x', 'v', v => v + 1) }
+  const store = Restore.create({ a: { b: 0, c: { d: 0 } }, z: { y: { x: { v: 0 } } } }, actions)
   store.observer(() => {
-    let $ = 'b'
+    const $ = 'b'
     expect(store('a', $)).toBe(0)
     expect(store('a.c', 'd')).toBe(0)
     if (store('z', 'y', 'x', 'v') === 1) done()
@@ -463,12 +467,12 @@ test('Multi-arg paths', done => {
 
 test('Observer Deregister', done => {
   let c = 0
-  let actions = {
+  const actions = {
     updateTestOne: (update) => update('testOne', testOne => testOne + 1),
     updateTestTwo: (update) => update('testTwo', testTwo => testTwo + 1),
     updateTestThree: (update) => update('testThree', testThree => testThree + 1)
   }
-  const store = Restore.create({testOne: 0, testTwo: 0, testThree: 0}, actions)
+  const store = Restore.create({ testOne: 0, testTwo: 0, testThree: 0 }, actions)
   class App extends React.Component {
     render () {
       c++
@@ -487,7 +491,7 @@ test('Observer Deregister', done => {
       }
     }
   }
-  let ConnectedApp = Restore.connect(App)
+  const ConnectedApp = Restore.connect(App)
   class Wrap extends React.Component {
     render () {
       return <ConnectedApp one={store('testOne')} />

@@ -22,4 +22,4 @@ export const deep = o => {
   return n
 }
 
-export default {deep, shallow}
+export default { deep, shallow }

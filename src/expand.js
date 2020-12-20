@@ -3,12 +3,12 @@
 */
 
 export const expand = (internal) => {
-  let links = Object.keys(internal.links)
+  const links = Object.keys(internal.links)
   let paths = internal.queue.paths
   if (paths.indexOf('*') !== -1) return links // Target all observers
-  let targets = []
+  const targets = []
   paths = [...new Set(paths)]
-  let peel = point => {
+  const peel = point => {
     if (point) {
       if (internal.links[point] && targets.indexOf(point) === -1) targets.push(point)
       peel(point.substring(0, point.lastIndexOf('.')))

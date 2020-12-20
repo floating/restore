@@ -12,21 +12,21 @@ export const resolve = (internal, action, tree = {}, name) => {
   if (typeof action === 'function') {
     return (...args) => {
       let deferred = false
-      let count = internal.count[name] = ++internal.count[name] || 1
-      internal.queue.actions.push({name, count, deferred, updates: []})
+      const count = internal.count[name] = ++internal.count[name] || 1
+      internal.queue.actions.push({ name, count, deferred, updates: [] })
       if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
-      let update = (...args) => {
+      const update = (...args) => {
         args = [...args]
-        let up = args.pop()
-        let path = pathway(args) || '*'
-        let value = up(thaw.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
+        const up = args.pop()
+        const path = pathway(args) || '*'
+        const value = up(thaw.deep(path === '*' ? internal.state : get(internal.state, path)), internal.state)
         internal.state = patch(internal.state, path, value)
         internal.queue.paths.push(path)
-        let last = internal.queue.actions[internal.queue.actions.length - 1]
+        const last = internal.queue.actions[internal.queue.actions.length - 1]
         if (last && last.name === name && last.count === count) {
-          last.updates.push({path, value})
+          last.updates.push({ path, value })
         } else {
-          internal.queue.actions.push({name, count, deferred, updates: [{path, value}]})
+          internal.queue.actions.push({ name, count, deferred, updates: [{ path, value }] })
           if (internal.queue.actions.length === 1) setTimeout(() => notify(internal), 0)
         }
       }

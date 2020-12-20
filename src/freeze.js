@@ -9,4 +9,4 @@ export const deep = o => {
   return shallow(o)
 }
 
-export default {deep, shallow}
+export default { deep, shallow }

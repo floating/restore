@@ -4,12 +4,13 @@ import Restore from 'react-restore'
 class Filter extends React.Component {
   visibilityLink (visibility) {
     if (this.store('visibility') === visibility) return <span>{visibility}</span>
-    let clickVisibility = (e) => {
+    const clickVisibility = (e) => {
       e.preventDefault()
       this.store.setVisibility(visibility)
     }
     return <a href='' onClick={clickVisibility}>{visibility}</a>
   }
+
   render () {
     return (
       <div>

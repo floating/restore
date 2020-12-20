@@ -13,7 +13,7 @@ import uuid from './uuid'
 export const create = (state = {}, actions = {}, options) => {
   const internal = {
     state: freeze.deep(state),
-    queue: {paths: [], actions: []},
+    queue: { paths: [], actions: [] },
     watchers: {},
     track: '',
     order: [],
@@ -23,9 +23,9 @@ export const create = (state = {}, actions = {}, options) => {
     count: {}
   }
   const store = (...args) => {
-    let path = pathway([...args])
+    const path = pathway([...args])
     if (internal.track) {
-      let id = internal.track
+      const id = internal.track
       internal.observers[id].links = internal.observers[id].links || []
       internal.links[path] = internal.links[path] || []
       if (internal.observers[id].links.indexOf(path) === -1) internal.observers[id].links.push(path)
@@ -36,36 +36,36 @@ export const create = (state = {}, actions = {}, options) => {
   store.observer = (run, id, alt) => {
     id = id || uuid()
     if (internal.order.indexOf(id) === -1) internal.order.push(id)
-    internal.observers[id] = {links: internal.observers[id] ? internal.observers[id].links : [], run: alt || run}
-    return {returned: observe(internal, id, run), remove: () => store.api.remove(id)}
+    internal.observers[id] = { links: internal.observers[id] ? internal.observers[id].links : [], run: alt || run }
+    return { returned: observe(internal, id, run), remove: () => store.api.remove(id) }
   }
   store.api = {
     replaceState: state => {
       state = freeze.deep(state)
       internal.queue.paths.push('*')
-      internal.queue.actions.push({name: 'api.replaceState', count: 0, internal: true, updates: [{path: '*', value: state}]})
+      internal.queue.actions.push({ name: 'api.replaceState', count: 0, internal: true, updates: [{ path: '*', value: state }] })
       internal.state = state
       notify(internal)
     },
     feed: watcher => {
-      let id = uuid()
+      const id = uuid()
       internal.watchers[id] = watcher
       return { remove: () => delete internal.watchers[id] }
     },
     remove: id => {
       if (internal.track === id) internal.track = null
-      let p = internal.pending.indexOf(id)
+      const p = internal.pending.indexOf(id)
       if (p > -1) internal.pending.splice(p, 1)
-      let o = internal.order.indexOf(id)
+      const o = internal.order.indexOf(id)
       if (o > -1) internal.order.splice(o, 1)
       Object.keys(internal.links).forEach(link => {
-        let l = internal.links[link].indexOf(id)
+        const l = internal.links[link].indexOf(id)
         if (l > -1) internal.links[link].splice(l, 1)
       })
       delete internal.observers[id]
     },
     report: id => {
-      let i = internal.pending.indexOf(id)
+      const i = internal.pending.indexOf(id)
       if (i > -1) internal.pending.splice(i, 1)
     }
   }

@@ -5,7 +5,7 @@ import Restore from 'react-restore'
 import App from './App'
 import * as actions from './actions'
 
-let initialState = {
+const initialState = {
   visibility: 'All',
   todos: []
 }

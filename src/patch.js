@@ -10,7 +10,7 @@ export const patch = (obj, path, value) => {
   if (path === '*') return freeze.deep(value)
   path = pathway.split(path)
   obj = thaw.shallow(obj)
-  let key = path.shift()
+  const key = path.shift()
   obj[key] = path.length > 0 ? patch(obj[key], path, value) : freeze.deep(value)
   return freeze.shallow(obj)
 }

@@ -2,7 +2,7 @@ let nextTodoId = 0
 
 export const addTodo = (update, text) => {
   update('todos', todos => {
-    let todo = {id: nextTodoId++, text, completed: false}
+    const todo = { id: nextTodoId++, text, completed: false }
     todos.push(todo)
     return todos
   })

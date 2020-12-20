@@ -8,6 +8,7 @@ class Add extends React.Component {
     this.store.addTodo(this.input.value)
     this.input.value = ''
   }
+
   render () {
     return (
       <div>

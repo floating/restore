@@ -6,7 +6,7 @@ import Add from './Add'
 import List from './List'
 import Filter from './Filter'
 
-let App = () => (
+const App = () => (
   <div>
     <Add />
     <List />
