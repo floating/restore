@@ -12,7 +12,7 @@ export const pathway = path => {
 }
 
 pathway.split = path => {
-  if (!path) return []
+  if (!path || path === '*') return []
   if (path.constructor === Array) return path
   return path.split('.')
 }

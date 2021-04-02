@@ -514,3 +514,15 @@ test('Observer Deregister', done => {
     }, 0)
   }, 0)
 })
+
+test('Observing whole state', done => {
+  const actions = { updateV: (update) => update('z', z => { return { y: { x: { v: z.y.x.v + 1 } } } }) }
+  const store = Restore.create({ a: { b: 0 }, z: { y: { x: { v: 0 } } } }, actions)
+  let count = 0
+  store.observer(() => {
+    store()
+    if (count === 3) done()
+    count++
+    store.updateV()
+  })
+})

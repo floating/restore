@@ -23,7 +23,7 @@ export const create = (state = {}, actions = {}, options) => {
     count: {}
   }
   const store = (...args) => {
-    const path = pathway([...args])
+    const path = pathway([...args]) || '*'
     if (internal.track) {
       const id = internal.track
       internal.observers[id].links = internal.observers[id].links || []
