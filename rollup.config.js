@@ -1,12 +1,18 @@
 import path from 'path'
 import resolve from 'rollup-plugin-node-resolve'
+import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 
-const pkg = require('./package.json')
+const _require = createRequire(import.meta.url)
+const pkg = _require('./package.json')
+
+const input = fileURLToPath(new URL('src/index.js', import.meta.url))
+const output = fileURLToPath(new URL('lib/index.js', import.meta.url))
 
 export default {
-  input: path.resolve(__dirname, 'src/index.js'),
+  input: input,
   output: {
-    file: path.resolve(__dirname, 'lib/index.js'),
+    file: output,
     globals: { react: 'React' },
     strict: true,
     exports: 'named'
