@@ -1,9 +1,9 @@
 {
   "name": "react-restore",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A predictable and observable state container for React apps",
   "main": "lib/index.js",
-  "author": "C. Jordan Muir <cjm712@gmail.com> (https://github.com/floating)",
+  "author": "Jordan Muir <jordan@frame.sh> (https://github.com/floating)",
   "files": [
     "lib"
   ],
@@ -11,7 +11,7 @@
     "last 2 Chrome versions"
   ],
   "scripts": {
-    "test": "npm run build && jest && npm run size && standard",
+    "test": "npm run build && jest --env=jsdom && npm run size",
     "build": "rollup -c rollup.config.js -f umd -n restore",
     "prepublishOnly": "npm test",
     "size": "node -e \"process.stdout.write('Gzipped: ')\" && gzip-size lib/index.js",
@@ -24,20 +24,22 @@
   "bugs": {
     "url": "https://github.com/floating/restore/issues"
   },
+  "type": "module",
   "devDependencies": {
-    "@babel/core": "7.13.14",
-    "@babel/plugin-proposal-function-bind": "7.12.13",
-    "@babel/preset-env": "7.13.12",
-    "@babel/preset-react": "7.13.13",
-    "@babel/register": "7.13.14",
-    "gzip-size-cli": "4.0.0",
-    "jest-cli": "26.6.3",
-    "react": "17.0.1",
-    "react-dom": "17.0.2",
-    "rollup": "2.44.0",
+    "@babel/core": "7.20.5",
+    "@babel/plugin-proposal-function-bind": "7.18.9",
+    "@babel/preset-env": "7.20.2",
+    "@babel/preset-react": "7.18.6",
+    "@babel/register": "7.18.9",
+    "gzip-size-cli": "5.1.0",
+    "jest-cli": "29.3.1",
+    "jest-environment-jsdom": "29.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "rollup": "3.5.0",
     "rollup-plugin-babel": "3.0.7",
     "rollup-plugin-node-resolve": "3.3.0",
-    "standard": "16.0.3",
+    "standard": "17.0.0",
     "watch-run": "1.2.5"
   },
   "peerDependencies": {
@@ -66,6 +68,6 @@
   "license": "MIT",
   "dependencies": {
     "babel-core": "6.26.3",
-    "babel-eslint": "^10.1.0"
+    "babel-eslint": "10.1.0"
   }
 }
