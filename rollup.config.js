@@ -1,4 +1,3 @@
-import path from 'path'
 import resolve from 'rollup-plugin-node-resolve'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
