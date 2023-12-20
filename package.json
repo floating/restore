@@ -1,6 +1,6 @@
 {
   "name": "react-restore",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "A predictable and observable state container for React apps",
   "main": "lib/index.js",
   "author": "Jordan Muir <jordan@frame.sh> (https://github.com/floating)",
@@ -25,20 +25,20 @@
     "url": "https://github.com/floating/restore/issues"
   },
   "devDependencies": {
-    "@babel/core": "7.20.5",
-    "@babel/plugin-proposal-function-bind": "7.18.9",
-    "@babel/preset-env": "7.20.2",
-    "@babel/preset-react": "7.18.6",
-    "@babel/register": "7.18.9",
+    "@babel/core": "7.23.6",
+    "@babel/plugin-proposal-function-bind": "7.23.3",
+    "@babel/preset-env": "7.23.6",
+    "@babel/preset-react": "7.23.3",
+    "@babel/register": "7.22.15",
     "gzip-size-cli": "5.1.0",
-    "jest-cli": "29.3.1",
-    "jest-environment-jsdom": "29.3.1",
+    "jest-cli": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "rollup": "3.5.0",
+    "rollup": "4.9.1",
     "rollup-plugin-babel": "3.0.7",
     "rollup-plugin-node-resolve": "3.3.0",
-    "standard": "17.0.0",
+    "standard": "17.1.0",
     "watch-run": "1.2.5"
   },
   "peerDependencies": {
