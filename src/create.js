@@ -23,7 +23,8 @@ export const create = (state = {}, actions = {}, options) => {
     count: {}
   }
   const store = (...args) => {
-    const path = pathway([...args]) || '*'
+    const path = pathway([...args])
+    if (path === undefined) return undefined
     if (internal.track) {
       const id = internal.track
       internal.observers[id].links = internal.observers[id].links || []
@@ -36,40 +37,50 @@ export const create = (state = {}, actions = {}, options) => {
   store.observer = (run, id, alt) => {
     id = id || uuid()
     if (internal.order.indexOf(id) === -1) internal.order.push(id)
-    internal.observers[id] = { links: internal.observers[id] ? internal.observers[id].links : [], run: alt || run }
+    internal.observers[id] = {
+      links: internal.observers[id] ? internal.observers[id].links : [],
+      run: alt || run
+    }
     return { returned: observe(internal, id, run), remove: () => store.api.remove(id) }
   }
   store.api = {
-    replaceState: state => {
+    replaceState: (state) => {
       state = freeze.deep(state)
       internal.queue.paths.push('*')
-      internal.queue.actions.push({ name: 'api.replaceState', count: 0, internal: true, updates: [{ path: '*', value: state }] })
+      internal.queue.actions.push({
+        name: 'api.replaceState',
+        count: 0,
+        internal: true,
+        updates: [{ path: '*', value: state }]
+      })
       internal.state = state
       notify(internal)
     },
-    feed: watcher => {
+    feed: (watcher) => {
       const id = uuid()
       internal.watchers[id] = watcher
       return { remove: () => delete internal.watchers[id] }
     },
-    remove: id => {
+    remove: (id) => {
       if (internal.track === id) internal.track = null
       const p = internal.pending.indexOf(id)
       if (p > -1) internal.pending.splice(p, 1)
       const o = internal.order.indexOf(id)
       if (o > -1) internal.order.splice(o, 1)
-      Object.keys(internal.links).forEach(link => {
+      Object.keys(internal.links).forEach((link) => {
         const l = internal.links[link].indexOf(id)
         if (l > -1) internal.links[link].splice(l, 1)
       })
       delete internal.observers[id]
     },
-    report: id => {
+    report: (id) => {
       const i = internal.pending.indexOf(id)
       if (i > -1) internal.pending.splice(i, 1)
     }
   }
-  Object.keys(store.api).forEach(method => { if (actions[method]) throw new Error(`[Restore] API method name ${method} is reserved.`) })
+  Object.keys(store.api).forEach((method) => {
+    if (actions[method]) throw new Error(`[Restore] API method name ${method} is reserved.`)
+  })
   Object.assign(store, resolve(internal, actions))
   internal.store = store
   return store
