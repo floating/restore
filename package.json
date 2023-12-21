@@ -1,6 +1,6 @@
 {
   "name": "react-restore",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A predictable and observable state container for React apps",
   "main": "lib/index.js",
   "author": "Jordan Muir <jordan@frame.sh> (https://github.com/floating)",

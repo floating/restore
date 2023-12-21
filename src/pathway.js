@@ -6,10 +6,10 @@ const way = (path) => path.replace(/]\[|]|\[|]/g, '.').replace(/"|'|^\.+|\.+$/g,
 
 export const pathway = (path) => {
   if (arguments.length === 0) return '*' // Handle case when no argument is passed
-  if (path === undefined || path === null) return undefined // Handle undefined path
+  if (path === undefined || path === null || path === '') return undefined // Handle undefined path
   if (Array.isArray(path)) {
     if (path.length === 0) return '*'
-    if (path.includes(undefined) || path.includes(null)) return undefined
+    if (path.includes(undefined) || path.includes(null) || path.includes('')) return undefined
     return way(path.join('.'))
   }
   if (typeof path === 'string') return way(path) // Handle string path
