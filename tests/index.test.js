@@ -73,11 +73,24 @@ test(`Handle true Path Part`, () => {
   expect(store('test', j)).toBeUndefined()
 })
 
+test(`Handle false Path`, () => {
+  const store = Restore.create({ test: { string: 'Hello World' } }, {})
+  expect(store('test')).toBeTruthy()
+  let j = false
+  expect(store(j)).toBeUndefined()
+})
+
+test(`Handle false Path Part`, () => {
+  const store = Restore.create({ test: { string: 'Hello World' } }, {})
+  expect(store('test')).toBeTruthy()
+  let j = false
+  expect(store('test', j)).toBeUndefined()
+})
+
 test('Handle {} Path Part', () => {
   const store = Restore.create({ test: { string: 'Hello World' } }, {})
   expect(store('test')).toBeTruthy()
-  let j = {}
-  expect(store('test', j)).toBeUndefined()
+  let j = expect(store('test', j)).toBeUndefined()
 })
 
 test('Handle {} Path', () => {
